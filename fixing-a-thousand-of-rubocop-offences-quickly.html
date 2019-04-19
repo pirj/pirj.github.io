@@ -3,6 +3,7 @@
 <pre class=root>
   <strong><a href=/>A mazing engineer</a></strong> ╚═╩╬╗
 
+
   18-Apr-2019 <strong>Fixing a thousand of RuboCop offences quickly</strong>
 
   In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an `RSpec::Matcher::Countable` module to make the following code possible:
