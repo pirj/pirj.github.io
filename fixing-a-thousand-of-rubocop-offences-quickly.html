@@ -6,15 +6,16 @@
 
   18-Apr-2019 <strong>Fixing a thousand of RuboCop offences quickly</strong>
 
+
   In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an `RSpec::Matcher::Countable` module to make the following code possible:
 
-  <pre class=code>
+  <pre class=ruby>
     expect { perform! }.to send_notification(SpaceshipArrived).exactly(:twice)
   </pre>
 
   Unfortunately, this module doesn't exist. Countable is used in `rspec-expectations`, and `rspec-mocks`, but its definition is spread out and not reusable. Hold my beer, I decided, I'll extract it. But there was another thing that immediately caught my eye:
 
-  <pre class=code>
+  <pre class=shell>
     $ rubocop
     Inspecting 144 files
     CCWCCCCCCCCCCCCCCCCCCCWCWWCCCCWCWWCCCWCCCCCWWWWWCCWCCWCWCCWCWCWCCCCCCWWWCWCWCCCCCCCCWCWWCCCWCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -22,15 +23,13 @@
     144 files inspected, 1324 offenses detected
   </pre>
 
-  WHAT?! I started looking, there were 66 different cops, each detecting from singular to over a hundred offences. Also
-  RuboCop version is out of date, 0.52.1 released back in December 2017 vs 0.67 being the current version. Keeping in mind
-  the very active development pace of RuboCop, that's a lot.
+  WHAT?! I started looking, there were 66 different cops, each detecting from singular to over a hundred offences. Also RuboCop version is out of date, 0.52.1 released back in December 2017 vs 0.67 being the current version. Keeping in mind the very active development pace of RuboCop, that's a lot.
 
   Hold my other beer, I decided, I'll fix them all.
 
   Luckily enough, RuboCop is not only capable of detecting offences, it also comes with an option to auto-correct them. I could auto-correct everything, and if I would:
 
-  <pre class=code>
+  <pre class=shell>
     $ rubocop --auto-correct
     144 files inspected, 1670 offenses detected, 1449 offenses corrected
 
@@ -65,10 +64,9 @@
 
   It was tempting to update RuboCop to the latest version, in hopes the issues were fixed, but that would bring even more cops, and would require a lot of changes to `.rubocop.yml`, since cops keep chaning their names, and some of them retire. But most importantly, that would make `rspec-expectations`'s RuboCop configuration misaligned with `.rubocop_rspec_base.yml` that is auto-generated and comes from an umbrella repository, `rspec-dev`, that has a base config for all RSpec related repositories, specifically `mocks`, `expectations`, `core`, `rails`, and `support`.
 
-  Yet another helpful RuboCop option to the help: `rubocop --auto-gen-config`. It creates a `.rubocop_todo.yml` file,
-  disabling all the cops that have offences, including counts and configuration options:
+  Yet another helpful RuboCop option to the help: `rubocop --auto-gen-config`. It creates a `.rubocop_todo.yml` file, disabling all the cops that have offences, including counts and configuration options:
 
-  <pre class=code>
+  <pre class=shell>
     # Offense count: 127
     # Cop supports --auto-correct.
     # Configuration parameters: EnforcedStyle.
@@ -101,9 +99,9 @@
 
   The impact on `rspec-mocks` was <a href=https://github.com/rspec/rspec-mocks/commit/3b909ed1a951bbca340ea98c27ab65da7f43881c>even more noticeable</a>, as it caused 280 warnings across the test suite and urged the author to come up with undesirable changes:
 
-  <pre class=code>
-  - let(:dbl) { double }
-  + let(:the_dbl) { double }
+  <pre class=ruby>
+    - let(:dbl) { double }
+    + let(:the_dbl) { double }
   </pre>
 
   that left their traces until modern days.
@@ -119,9 +117,9 @@
     white-space: pre-line;
     margin: 5% 10%;
   }
-  pre.code {
+  pre pre {
     overflow-x: scroll;
-    margin-bottom: 0;
+    margin: 0 0 -1em 0;
   }
   footer {
     opacity: 0.1;
