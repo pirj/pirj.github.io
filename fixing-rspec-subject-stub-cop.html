@@ -1,0 +1,150 @@
+<!doctype html>
+<style>
+  pre {
+    white-space: pre-line;
+    margin: 5% 10%;
+    font-family: Courier;
+  }
+  pre pre {
+    white-space: pre;
+    overflow-x: scroll;
+    margin: 0 0 -1em 0;
+    background-color: #eee;
+  }
+  code {
+    background-color: #eee;
+    font-family: Courier;
+  }
+  footer {
+    opacity: 0.1;
+  }
+</style>
+
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+
+<pre>
+  @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
+
+
+  30-Jun-2019 <string>Fixing RSpec/SubjectStub Cop</strong>
+
+  One of my favourite open source projects is (I know, this is rather strange) <a href="https://github.com/rubocop-hq/rubocop-rspec"><code>rubocop-rspec</code></a>. I won't dive deep into why having correct and readable tests is important.
+
+  <code>rubocop-rspec</code> is enforcing <a href="https://github.com/rubocop-hq/rspec-style-guide">RSpec Style Guide</a>, of which I'm one of the editors. It is providing many more options to enforce consistency of the code style and find common flaws in your project's test code. The guide and <code>rubocop-rspec</code> are, unfortunately, not completely in sync, but eventually they will be.
+
+  I've started to actively submit to this repository <a href="https://github.com/rubocop-hq/rubocop-rspec/blob/master/CHANGELOG.md#1330-2019-05-13">just recently</a>. My <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/726">second cop</a> happened to grow to a monster I'll have to split up into several cops.
+
+  There were 80+ open issues at the time with a growing trend. In an attempt to bring everything in order and reduce the burden of having such a lengthy TODO (very well described in <a href="https://metaredux.com/posts/2019/05/09/always-be-closing.html">Always Be Closing</a>), I <a href="https://github.com/rubocop-hq/rubocop-rspec/pulls?q=is%3Apr+author%3Apirj+is%3Amerged">started addressing issues one by one</a>.
+
+  Next ticket was <a href="https://github.com/rubocop-hq/rubocop-rspec/issues/705">Inconsistent behaviour of SubjectStub</a>. The idea behind the cop is described in detail by Sam Phippen in <a href="https://samphippen.com/introducing-rspec-smells/">RSpec Smells: Stubject</a>, and ThoughtBot's <a href="https://robots.thoughtbot.com/don-t-stub-the-system-under-test">Don't Stub the System Under Test</a>.
+
+  The details of the bug report were:
+
+  <pre class=ruby>
+    # detects offences
+    expect(subject).to receive(:my_method)
+    expect(subject).to receive(:my_method).and_call_original
+    expect(subject).to receive(:my_method).and_wrap_original { |m, *| m.call(42) }
+
+    # does not detect an offence
+    expect(subject).not_to receive(:my_method)
+  </pre>
+
+  I imagined the fix will be trivial, something like:
+
+  <pre class=diff>
+    - :to
+    + { :to :not_to :to_not }
+  </pre>
+
+  However, I've immediately spotted a number of other flaws in the cop, and couldn't resist fixing them all. On my daily job, I would normally file a ticket flagged as <code>tech-debt</code>, and would address it at the end of the sprint in that spare time one can dedicate to any desired improvements. But with no deadlines, nor sprint constraints, no disturbing thoughts about scope creep, it's so natural to take a thing and make it as good as it can be.
+
+  <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/069a7f9e69115de72269ee873edd8b505fffcac6">First off</a>, cop's spec example context descriptions were inconsistent, mixing "complains" with "flags". I've seen different variations, but "flags" and its opposite, "ignores" seem to be the most commonly used.
+
+  <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/8ea922c017a0db4ff5ad93778bbf9b66cb5955cd">Secondly</a>, it turned out that one-liner expectation syntax was not properly detected. Also, <code>allow(subject)</code> without <code>.to receive(...)</code> would be flagged as well. It's valid syntax, but without a matcher attached it makes no sense. I've seen a worse case several times in the wild, when matcher is used on its own, as a complete statement, without expectations, e.g. <code>validates_presence_of(:email)</code> without <code>is_expected.to</code>. There's not yet a cop for it.
+
+  <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/393278c83cedf342b04779d9a1a2268b9ae08c70">Next</a>, the original issue with negated runners, <code>not_to</code> and <code>to_not</code>.
+
+  Apart from <code>receive</code>, RSpec provides <code>receive_messages</code> and <code>receive_message_chain</code>. <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/20cd88a1a6ca3c5cae2c2340df4458081dcce16b">Adding support for them</a> was as trivial as for negated runners. <a href="https://relishapp.com/rspec/rspec-mocks/v/3-8/docs/basics/spies">Additionally</a>, a <a href="https://relishapp.com/rspec/rspec-mocks/v/3-8/docs/basics/spies">spy-style</a> message expectations (<code>.to have_received</code>).
+
+  Offence message was not very self-explanatory, and it's something that takes a lot of time and is the cause of major frustration when those offences come up. Could not leave a <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/c7d7ea7e862bca4c2878126dd9e33237f7c3ab3a">non-descriptive message</a>.
+
+  <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/964de2799c36061996034f021ef0020295e91956">Added references</a> to regarded sources.
+
+  <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/05bf0c7926b5cfdf83934badf04ec12fd31a11db">A corner case</a> when a named subject is defined, but the expectation is made on a literal <code>subject</code>.
+
+  It was all quite straightforward up until that moment. And then came the trouble.
+
+  There was a special case in the cop to ignore the <a href="https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/all-matcher"><code>all</code> matcher</a> being applied to the subject:
+
+  <pre class=ruby>
+    expect(subject).to all receive(:baz)
+  </pre>
+
+  It is still stubbing the subject. Why was this introduced? Turns out, to ignore the offence that the cop would raise in the following test code in <code>rubocop</code>:
+
+  <pre class=ruby>
+    expect(formatter_set).to all receive(:started).with(files)
+  </pre>
+
+  Originally, this test code <a href="https://github.com/rubocop-hq/rubocop/commit/c8729c8ecd6c312d5ca8bb6b660d5380038b1ed6#diff-be297a2e1f10d4ed00f8faaf78f0f06cL23">was introduced</a> to appease another cop, <code>RSpec/IteratedExpectation</code>. And that change has added a <code># rubocop:disable RSpec/SubjectStub</code> directive. And later a <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/497">quick fix</a> to <code>rubocop-rspec</code> was made to ignore <code>all</code> matcher when used with <code>expect(subject)</code>.
+
+  This case in <code>rubocop</code> test code is quite interesting. There's a <code>formatter_set</code>, containing entries, formatters, and delegating specific method calls to them. As an additional puzzle, there's no way to add entries to the set, except by passing their attributes. That resulted in the following test code:
+
+  <pre class=ruby>
+    formatter_set.add_formatter('simple')
+    formatter_set.add_formatter('emacs')
+
+    allow(formatter_set).to all receive(:started)
+
+    formatter_set.started(files)
+
+    expect(formatter_set).to all have_received(:started).with(files)
+  </pre>
+
+  It didn't seem right to me. If I would decide to remove the <code>all</code> special case, I would also have to <a href="https://github.com/rubocop-hq/rubocop/commit/a0aaa233c20e18784d841212e1caa724bcc919f7">fix the <code>rubocop</code> test code</a> so that on the next <code>rubocop-rspec</code> update there would be no offences.
+
+  The change itself was trivial, but there was another problem with the new code, the default <code>have_received</code> enforced style of <code>RSpec/MessageSpies</code>. What does it mean? It means that:
+
+  <pre class=ruby>
+    # bad
+    expect(foo).to receive(:bar)
+
+    # good
+    expect(foo).to have_received(:bar)
+  </pre>
+
+  Both are valid syntaxes, and there's only one good reason to pick the latter for the former - Arrange-Act-Assert pattern, or <a href="https://thoughtbot.com/blog/four-phase-test">Four-Phase Test</a> (setup-excercise-verify-teardown) pattern. This pattern is unfortunately commonly overlooked.
+
+  <code>rubocop</code> itself used both syntaxes. A quick search showed 36 occurrences of <code>to have_received</code> and 97 of <code>to receive</code>. I did another check, just to make sure I'm not trying to promote a bad practice, and grep'ed through a number of Ruby project codebases conveniently gathered in one repository, <a href="github.com/jeromedalbert/real-world-ruby-apps">Real World Ruby Apps</a>. <code>.to receive</code> were even more prevailing, with 21453 occurrences over 102 for <code>.to have_received</code>. That inspired me to continue.
+
+  Since I've checked out all submodules of <code>real-world-ruby-apps</code>, I decided to run a modified version of <code>RSpec/SubjectStub</code> cop that would only detect <code>.to all receive</code> on a subject. Surprisingly there was no single offence detected. Surprisingly - because <code>rubocop</code> is one of the Real World Ruby Apps' submodules. And it was not detected, even though I knew that on latest <code>rubocop</code>'s <code>master</code> it would raise an offence. Unfortunately, this is due to how submodules work - you have to specify a tip of the linked repository, and <code>rubocop</code> was out of date there. I must confess, I did not update all the submodules and re-checked, only did that with <code>rubocop</code> to make sure my experiment is correct. It did, of course, detect an offence.
+
+  To find an additional proof, I've checked out a similar <a href="https://github.com/eliotsykes/real-world-rails">Real World Rails</a> repository, that incorporates a fair number of applications written in Rails and pluggable Rails engines. No single offence there as well.
+
+  It was the only offence in the popular open sourced Ruby projects. And this confirmed the information that the special case of dealing with <code>expect(subject).to all receive</code> was introduced to deal with the only offence in a single repository.
+
+  So, I've sent a <a href="https://github.com/rubocop-hq/rubocop/pull/7067">pull request</a> to switch RuboCop's own test code to <code>receive</code> completely. It was accepted almost immediately, probably partially due to a detailed pull request description, you may want to read it. If you follow the comments, there's my explanation why I did not (at least in most cases) break the A-A-A pattern. Code-wise I see this as an improvement, I've spent quite some time on this change to make sure the tests are at least as readable as previously. <a href="https://github.com/rubocop-hq/rubocop/pull/7067/commits/824213c4cb031bcb0ba0524c378251e5a0589c22#diff-be297a2e1f10d4ed00f8faaf78f0f06cR18">This commit</a> was the most important, with this change being merged I had a weighty argument in <code>rubocop-rspec</code>'s pull request for removing the special case for <code>all</code> matcher. <code>RSpec/SubjectStub</code>, <code>RSpec/IteratedExpectation</code>, and <code>RSpec/MessageSpies</code> were all appeased. Yay!
+
+  I've added <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770/commits/f06446f238055b51f5460615302fa31537b8f864">another commit</a> to my <code>rubocop-rspec</code> pull request to get rid of this special case.
+
+  I still had to convince <code>rubocop-rspec</code> maintainers though that <code>all</code> matcher is still technically stubbing the subject itself. Not going to quote <a href="https://github.com/rubocop-hq/rubocop-rspec/issues/488#issuecomment-500239355">my explanation</a>, check it out if you are interested in the details. We all agreed that it's ok to remove the special case.
+
+  There's still a workaround if you can't find a way around stubbing your subject that is a delegating container (notice <code>.each</code>):
+
+  <pre class=ruby>
+    expect(subject.each).to all receive(:some_method)
+  </pre>
+
+  All the changes described above went to a relatively small <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770">+130 -31 pull request</a> that has been recently merged.
+
+  I continue my work on reducing the number of issues/pulls in <code>rubocop-rspec</code> along with the other regular committers, but there's still a long road towards Zero Issues. Join the movement, it's pretty entertaining!
+
+  Takeaways:
+  &nbsp;- the practices common to repositories consisting Real World Ruby/Rails Apps can be used as an argument that a specific practice is common, and in general appreciated by Ruby community
+  &nbsp;- it's all so complicated, but still fixable with enough persistence
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</pre>
