@@ -11,6 +11,10 @@
     margin: 0 0 -1em 0;
     background-color: #eee;
   }
+  code {
+    background-color: #eee;
+    font-family: Courier;
+  }
   footer {
     opacity: 0.1;
   }
@@ -25,13 +29,13 @@
   18-Apr-2019 <strong>Fixing a thousand of RuboCop offences quickly</strong>
 
 
-  In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an `RSpec::Matcher::Countable` module to make the following code possible:
+  In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an <code>RSpec::Matcher::Countable</code> module to make the following code possible:
 
   <pre class=ruby>
     expect { perform! }.to send_notification(SpaceshipArrived).exactly(:twice)
   </pre>
 
-  Unfortunately, this module doesn't exist. Countable is used in `rspec-expectations`, and `rspec-mocks`, but its definition is spread out and not reusable. Hold my beer, I decided, I'll extract it. But there was another thing that immediately caught my eye:
+  Unfortunately, this module doesn't exist. Countable is used in <code>rspec-expectations</code>, and <code>rspec-mocks</code>, but its definition is spread out and not reusable. Hold my beer, I decided, I'll extract it. But there was another thing that immediately caught my eye:
 
   <pre class=shell>
     $ rubocop
@@ -80,9 +84,9 @@
 
   My goal was to align the style used across the code base. However, to reduce the code churn, I would have to adjust the rules to the existing code.
 
-  It was tempting to update RuboCop to the latest version, in hopes the issues were fixed, but that would bring even more cops, and would require a lot of changes to `.rubocop.yml`, since cops keep chaning their names, and some of them retire. But most importantly, that would make `rspec-expectations`'s RuboCop configuration misaligned with `.rubocop_rspec_base.yml` that is auto-generated and comes from an umbrella repository, `rspec-dev`, that has a base config for all RSpec related repositories, specifically `mocks`, `expectations`, `core`, `rails`, and `support`.
+  It was tempting to update RuboCop to the latest version, in hopes the issues were fixed, but that would bring even more cops, and would require a lot of changes to <code>.rubocop.yml</code>, since cops keep chaning their names, and some of them retire. But most importantly, that would make <code>rspec-expectations</code>'s RuboCop configuration misaligned with <code>.rubocop_rspec_base.yml</code> that is auto-generated and comes from an umbrella repository, <code>rspec-dev</code>, that has a base config for all RSpec related repositories, specifically <code>mocks</code>, <code>expectations</code>, <code>core</code>, <code>rails</code>, and <code>support</code>.
 
-  Yet another helpful RuboCop option to the help: `rubocop --auto-gen-config`. It creates a `.rubocop_todo.yml` file, disabling all the cops that have offences, including counts and configuration options:
+  Yet another helpful RuboCop option to the help: <code>rubocop --auto-gen-config</code>. It creates a <code>.rubocop_todo.yml</code> file, disabling all the cops that have offences, including counts and configuration options:
 
   <pre class=shell>
     # Offense count: 127
@@ -93,11 +97,11 @@
       Enabled: false
   </pre>
 
-  Not bad. Mostly manual work from that moment. Run `rubocop --only Style/FrozenStringLiteralComment`, visually check offences, (ok, mostly auto-) fix offences, remove the cop from `.rubocop_todo.yml`, commit.
+  Not bad. Mostly manual work from that moment. Run <code>rubocop --only Style/FrozenStringLiteralComment</code>, visually check offences, (ok, mostly auto-) fix offences, remove the cop from <code>.rubocop_todo.yml</code>, commit.
 
-  For some of the cops the change is just not worth it, like for the aftermentioned `Style/FrozenStringLiteralComment`. Only one file had `frozen_string_literal: true` directive set, so it was easier to just disable it.
+  For some of the cops the change is just not worth it, like for the aftermentioned <code>Style/FrozenStringLiteralComment</code>. Only one file had <code>frozen_string_literal: true</code> directive set, so it was easier to just disable it.
 
-  There were cops, e.g. `Layout/SpaceInsideHashLiteralBraces`, with several different styling options, e.g. `EnforcedStyleForEmptyBraces` and `EnforcedStyle`, each with several options.
+  There were cops, e.g. <code>Layout/SpaceInsideHashLiteralBraces</code>, with several different styling options, e.g. <code>EnforcedStyleForEmptyBraces</code> and <code>EnforcedStyle</code>, each with several options.
 
   <table>
     <tr> <th>EnforcedStyle &gt; <br/>v EnforcedStyleForEmptyBraces</th> <th>space (default)</th> <th>no_space</th> <th>compact</th> </tr>
@@ -107,15 +111,15 @@
 
   In this case I went with the defaults, and 92 changes across the code.
 
-  One last option worth mentioning is `rubocop --parallel`, that, as its name suggests, processes in parallel. Even with relatively small code base the difference in execution time is noticable.
+  One last option worth mentioning is <code>rubocop --parallel</code>, that, as its name suggests, processes in parallel. Even with relatively small code base the difference in execution time is noticable.
 
   Of course, this journey wouldn't be interesting without some discoveries.
 
-  Back in the day when Ruby 2.2 was introduced, it started flooding the logs with <a href=https://github.com/ruby/ruby/commit/f5f6218a23fdbe45d1a80c202a131f02c3eef0ce>"possible reference to past scope"</a> warnings, and Myron Marston had to <a href=https://github.com/rspec/rspec-expectations/pull/703>address them</a>, as he later mentions "changed many variable and method names to names I do not like as much". The warning <a href=https://bugs.ruby-lang.org/issues/10661>has later been removed</a>, but the code in `rspec-expectations` remained. I had an opportunity to revert part of it, since RuboCop was pointing at it.
+  Back in the day when Ruby 2.2 was introduced, it started flooding the logs with <a href=https://github.com/ruby/ruby/commit/f5f6218a23fdbe45d1a80c202a131f02c3eef0ce>"possible reference to past scope"</a> warnings, and Myron Marston had to <a href=https://github.com/rspec/rspec-expectations/pull/703>address them</a>, as he later mentions "changed many variable and method names to names I do not like as much". The warning <a href=https://bugs.ruby-lang.org/issues/10661>has later been removed</a>, but the code in <code>rspec-expectations</code> remained. I had an opportunity to revert part of it, since RuboCop was pointing at it.
 
   However, not all of them for some reason. I visually found a couple more that RuboCop missed. Temporary update to latest RuboCop indicated that this detection is not yet fixed in latest RuboCop version.
 
-  The impact on `rspec-mocks` was <a href=https://github.com/rspec/rspec-mocks/commit/3b909ed1a951bbca340ea98c27ab65da7f43881c>even more noticeable</a>, as it caused 280 warnings across the test suite and urged the author to come up with undesirable changes:
+  The impact on <code>rspec-mocks</code> was <a href=https://github.com/rspec/rspec-mocks/commit/3b909ed1a951bbca340ea98c27ab65da7f43881c>even more noticeable</a>, as it caused 280 warnings across the test suite and urged the author to come up with undesirable changes:
 
   <pre class=ruby>
     - let(:dbl) { double }

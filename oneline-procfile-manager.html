@@ -11,6 +11,10 @@
     margin: 0 0 -1em 0;
     background-color: #eee;
   }
+  code {
+    background-color: #eee;
+    font-family: Courier;
+  }
   footer {
     opacity: 0.1;
   }
@@ -92,7 +96,7 @@
   Toreman accepts a single argument, a layout to be used. Tiled is the default, the other options are even-horizontal, even-vertical, main-horizontal, and main-vertical.
 
   As per the comments, Toreman might not support alternative shells (e.g. tcsh, ksh) so well.
-  I've tested on Fish shell, it worked quite fine except that you have to prefix environment variables with an `env`, e.g.:
+  I've tested on Fish shell, it worked quite fine except that you have to prefix environment variables with an <code>env</code>, e.g.:
 
   <pre>
     web: env PORT=8080 bundle exec rails server
