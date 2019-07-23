@@ -40,7 +40,18 @@
     B # =&gt; 1
   </pre>
 
-  Same applies to `module B` and `class C` declarations.
+  Same applies to module and class declarations inside blocks, e.g.:
+
+  <pre class=ruby>
+    A = Class.new do
+      module B
+      end
+      class C
+      end
+    end
+    A::B # NameError: uninitialized constant A::B
+    A::C # NameError: uninitialized constant A::C
+  </pre>
 
   No big deal, you think, it's kind of rare. Not really if you use RSpec.
 
