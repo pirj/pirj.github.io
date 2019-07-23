@@ -1,0 +1,101 @@
+<!doctype html>
+<style>
+  pre {
+    white-space: pre-line;
+    margin: 5% 10%;
+    font-family: Courier;
+  }
+  pre pre {
+    white-space: pre;
+    overflow-x: scroll;
+    margin: 0 0 -1em 0;
+    background-color: #eee;
+  }
+  code {
+    background-color: #eee;
+    font-family: Courier;
+  }
+  footer {
+    opacity: 0.1;
+  }
+</style>
+
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+
+<pre>
+  @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
+
+
+  23-Jul-2019 <string>Leaky Constants</strong>
+
+
+  It took me by surprise when I realized that any constant declared in a block body is defined as a top-level constant.
+  Yes, you've heard it correctly.
+
+  <pre class=ruby>
+    A = Class.new do
+      B = 1
+    end
+    A::B # NameError: uninitialized constant A::B
+    B # =&gt; 1
+  </pre>
+
+  Same applies to `module B` and `class C` declarations.
+
+  No big deal, you think, it's kind of rare. Not really if you use RSpec.
+
+  Every construct in RSpec DSL is a block. What you define in an example group, be it a method, or a variable, are defined locally to example groups, which are transformed to classes. Each time an example in this example group is being run, a new instance of that class is initialized, and it does not affect the other examples.
+
+  Except for the constants.
+
+  On one of the projects I was working on, we kept getting heisenbugs, that heavily depended on the order of spec execution. As long research has discovered, it was due to class name clashes. Instead of creating a temporary class, we kept reopening them, and modifying their behaviour.
+
+  Worst thing one could do is to `prepend` something, what makes the class behaviour practically irrevocable. Another example is to inherit a "temporary" class from `described_class`, which is a time bomb for "superclass mismatch" error.
+
+  One example can be:
+
+  <pre class=ruby>
+    # spec/a_spec.rb
+    RSpec.describe A do
+      class DummyClass &lt; described_class
+      end
+
+      it { ... }
+    end
+
+    # spec/b_spec.rb
+    RSpec.describe A do
+      class DummyClass
+      end
+
+      it { ... }
+    end
+  </pre>
+
+  Those two specs would normally run and won't affect each other. However, if you run them in reverse order, "superclass mismatch" will raise.
+
+  The reason the errors were not appearing immediately is the size of that project's codebase, and the fact that the specs were run on CI in multiple parallel processes. The clashing classes were clashing to fail only occasionally.
+
+  Worry not, we've got you covered.
+  There's this <a href=https://rubocop-rspec.readthedocs.io/en/latest/cops_rspec/#rspecleakyconstantdeclaration>new `LeakyConstantDeclaration`</a> RuboCop-RSpec cop to catch those cases. Update your `rubocop-rspec` to version 1.34, or install it if you're not using it yet on your projects using RSpec.
+
+  There's also a RSpec Style Guide <a href=https://rspec.rubystyle.guide/#declare-constants>Declaring Constants</a> guideline with good and bad examples.
+
+  Keep in mind, RuboCop and its extensions are not only to dictate layout rules that don't always align with your preferences, but also to keep you off shooting yourself in the foot.
+
+  RuboCop encourages you to tweak its configuration to match your project style. And even if you have <a href=fixing-a-thousand-of-rubocop-offences-quickly.html>thousands of offenses, it is possible to fix them quite quickly</a>.
+
+  If you'd like to dig deeper, please find some interesting links below:
+  &nbsp;- <a href=https://github.com/rubocop-hq/rubocop-rspec/issues/197#issuecomment-261495168>Original RuboCop-RSpec issue</a>
+  &nbsp;- <a href=http://blog.bitwrangler.com/2016/11/10/sacrificial-test-classes.html>Sacrificial Test Classes</a> article
+  &nbsp;- <a href=https://github.com/rubocop-hq/rubocop-rspec/pull/765#issuecomment-502949406>Cop pull request</a> and <a href=https://github.com/rubocop-hq/rubocop-rspec/pull/779>documentation improvement</a>
+  &nbsp;- <a href=https://github.com/rubocop-hq/rspec-style-guide/pull/101>Guideline introduction</a>
+
+  You are welcome to participate in all this, and your feedback is always appreciated. Subscribe to <a href=https://github.com/rubocop-hq/rspec-style-guide>`rspec-style-guide`</a> with "Watch", check existing issues, and submit your own.
+
+  Safe coding!
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</pre>
