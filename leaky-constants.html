@@ -53,6 +53,18 @@
     A::C # NameError: uninitialized constant A::C
   </pre>
 
+  To be precise, it's not defined on a top-level, but rather in the same scope that the block is being run:
+
+  <pre class=ruby>
+    module M
+      A = Class.new do
+        B = 1
+      end
+    end
+    M::A::B # NameError: uninitialized constant M::A::B
+    M::B # =&gt; 1
+  </pre>
+
   No big deal, you think, it's kind of rare. Not really if you use RSpec.
 
   Every construct in RSpec DSL is a block. What you define in an example group, be it a method, or a variable, are defined locally to example groups, which are transformed to classes. Each time an example in this example group is being run, a new instance of that class is initialized, and it does not affect the other examples.
