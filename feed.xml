@@ -5,41 +5,48 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
-  <lastBuildDate>Wed, 25 Mar 2020 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+  <lastBuildDate>Sun, 26 Apr 2020 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
+  <title>Questions to Ask in a Job Interview</title>
+  <link>https://fili.pp.ru/questions-to-ask-in-a-job-interview.html</link>
+  <description></description>
+  <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">320c63f0-cabd-7079-05b0-28237d5ea5a2</guid>
+</item>
+<item>
   <title>Leaky Constants</title>
   <link>https://fili.pp.ru/leaky-constants.html</link>
-  <description>It took me by surprise when I realized that any constant declared in a block body is defined as a top-level constant.</description>
+  <description></description>
   <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">25d7b15c-7019-1d0e-3a46-bbec3a839c1d</guid>
 </item>
 <item>
   <title>Fixing RSpec/SubjectStub Cop</title>
   <link>https://fili.pp.ru/fixing-rspec-subject-stub-cop.html</link>
-  <description>One of my favourite open source projects is (I know, this is rather strange) rubocop-rspec. I won't dive deep into why having correct and readable tests is important.</description>
+  <description></description>
   <pubDate>Sun, 30 Jun 2019 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">f1954aa6-e2b7-3b8a-4232-6219763c614a</guid>
 </item>
 <item>
   <title>Open Source, Biochemistry, and Happiness!</title>
   <link>https://fili.pp.ru/open-source-biochemistry-and-happiness.html</link>
-  <description>No code this week. Not even a single reference.</description>
+  <description></description>
   <pubDate>Sat, 8 Jun 2019 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">b10f0543-d344-29f4-b918-69535b113b54</guid>
 </item>
 <item>
   <title>One-line Procfile manager</title>
   <link>https://fili.pp.ru/oneline-procfile-manager.html</link>
-  <description>A Procfile contains pairs of process names and commands used to run it. It is often used to run several processes locally, during development, typically a web server, asset server, and background job processor:</description>
+  <description></description>
   <pubDate>Mon, 3 Jun 2019 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">ed48ac97-97d3-d2e2-d5ed-99617324b6bd</guid>
 </item>
 <item>
   <title>Fixing a thousand of RuboCop offences quickly</title>
   <link>https://fili.pp.ru/fixing-a-thousand-of-rubocop-offences-quickly.html</link>
-  <description>In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an RSpec::Matcher::Countable module to make the following code possible:</description>
+  <description></description>
   <pubDate>Thu, 18 Apr 2019 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">7494932d-7acc-9bae-1d07-949c840fe714</guid>
 </item>
