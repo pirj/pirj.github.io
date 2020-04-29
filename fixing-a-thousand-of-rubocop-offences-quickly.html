@@ -1,17 +1,20 @@
 <!doctype html>
 <style>
-  pre {
+  article {
     white-space: pre-line;
-    margin: 5% 10%;
     font-family: Courier;
+    font-size: 1.1em;
+    margin: 5% 10%;
   }
-  pre pre {
+  article pre {
     white-space: pre;
     overflow-x: scroll;
     margin: 0 0 -1em 0;
+    padding-top: 1em;
+    font-size: 1.2em;
     background-color: #eee;
   }
-  code {
+  article code {
     background-color: #eee;
     font-family: Courier;
   }
@@ -22,7 +25,7 @@
 
 <link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
 
-<pre>
+<article>
   @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
 
 
@@ -104,11 +107,14 @@
 
   There were cops, e.g. <code>Layout/SpaceInsideHashLiteralBraces</code>, with several different styling options, e.g. <code>EnforcedStyleForEmptyBraces</code> and <code>EnforcedStyle</code>, each with several options.
 
-  <table>
-    <tr> <th>EnforcedStyle &gt; <br/>v EnforcedStyleForEmptyBraces</th> <th>space (default)</th> <th>no_space</th> <th>compact</th> </tr>
-    <tr> <th>no_space (default)</th> <td>92</td> <td>126</td> <td>92</td> </tr>
-    <tr> <th>space</th> <td>105</td> <td>139</td> <td>105</td> </tr>
-  </table>
+  <pre>
+                  EnforcedStyle > | space (default) | no_space | compact
+    ----------------------------- | - - - - - - - - | - - - -  | - - - -
+    v EnforcedStyleForEmptyBraces | - - - - - - - - | - - - -  | - - - -
+    ----------------------------- | --------------- | -------- | -------
+               no_space (default) | <b>92</b>              | 126      | 92
+                           space  | 105             | 139      | 105
+  </pre>
 
   In this case I went with the defaults, and 92 changes across the code.
 
@@ -136,4 +142,4 @@
   <footer>
     The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
   </footer>
-</pre>
+</article>
