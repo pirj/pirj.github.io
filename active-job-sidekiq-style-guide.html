@@ -1,0 +1,77 @@
+<!doctype html>
+<style>
+  article {
+    white-space: pre-line;
+    font-family: Courier;
+    font-size: 1.1em;
+    margin: 5% 10%;
+  }
+  article pre {
+    white-space: pre;
+    overflow-x: scroll;
+    margin: 0 0 -1em 0;
+    padding-top: 1em;
+    font-size: 1.1em;
+    background-color: #eee;
+  }
+  article code {
+    background-color: #eee;
+    font-family: Courier;
+  }
+  footer {
+    opacity: 0.1;
+  }
+</style>
+
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+
+<article>
+  @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
+
+
+  18-Jul-2020 <strong>Sidekiq/Active Job style guide</strong>
+
+  <a href=https://github.com/pirj/pirj.github.io/pull/7/files>Comment on this article</a>
+
+  <a href=https://github.com/toptal/active-job-style-guide>The guide on how to painlessly work with Sidekiq and ActiveJob</a> I've been working on for so long is out.
+
+  It's based on:
+    - Sidekiq's wiki
+    - ActiveJob documentation
+    - many background jobs related code reviews
+    - known and rare pitfalls experienced in practice during past years
+
+  The publication of this guide is a big achievement for me, the biggest on the open-source front I can think of.
+
+  Hope you'll find it useful.
+  As for me, if the company I've worked for had this guide before starting DelayedJob to Sidekiq migration, we could have avoided many major headaches.
+  Some guidelines are unique in this guide, you won't find them in any other source.
+
+  It's a common belief that ActiveJob is redundant when working with Sidekiq, and bare Sidekiq is preferable.
+  It's hard to argue with that.
+  Do not let the very first guidelines to repel you, glance over the rest of the guide.
+
+  The guide covers both topics, even Sidekiq part prevails.
+
+  Read between the lines and you'll realize the unknown unknowns there are in background job processing.
+  Yet, still, background job processing keeps surprising as you dive deeper and deeper.
+
+  I've barely mentioned monitoring, but it's an essential part.
+  Think Tetris, but three-dimensional given an extra queue dimension.
+  Feed your workers in an optimal way.
+  Otherwise you'll experience saturation, lags, and perceived slowdown.
+
+  The guide is not nearly complete.
+  There's <a href=https://github.com/toptal/active-job-style-guide/issues/1>a ticket which I used as a todo list</a> for future guidelines.
+  You can help here, too.
+
+  Pull requests, additions to the todo list and any feedback are kindly appreciated.
+
+  <a href=https://www.reddit.com/r/ruby/comments/hswx6b/sidekiqactivejob_style_guide/>Reddit thread</a>.
+
+  <a href=https://github.com/pirj/pirj.github.io/pull/7/files>Comment on this article</a>
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</article>
