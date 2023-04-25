@@ -34,8 +34,6 @@
 
   18-Apr-2019 <strong>Fixing a thousand of RuboCop offences quickly</strong>
 
-  <a href=https://github.com/pirj/pirj.github.io/pull/5/files#diff-de2c32a22ced698692ad7af15b04b073R32>Comment on this article</a>
-
   In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an <code>RSpec::Matcher::Countable</code> module to make the following code possible:
 
   <pre class=ruby>
@@ -139,8 +137,6 @@
   that left their traces until modern days.
 
   64 commits later, a +576 −484 <a href=https://github.com/rspec/rspec-expectations/pull/1104>pull request</a> including doc fixes, added TravisCI support et al came to life.
-
-  <a href=https://github.com/pirj/pirj.github.io/pull/5/files#diff-de2c32a22ced698692ad7af15b04b073R32>Comment on this article</a>
 
   <footer>
     The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
