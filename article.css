@@ -22,3 +22,21 @@ article code {
 footer {
   opacity: 0.1;
 }
+input.comment {
+  width: 100%;
+}
+
+button.add-comment {
+  position: relative;
+  border: none;
+  border-radius: 0.5em;
+  background-color: transparent;
+  transition: background-color 1s;
+}
+button.add-comment:hover {
+  background-color: #6662;
+}
+
+p mark {
+  background-color: yellow;
+}
