@@ -1,3 +1,10 @@
 = About me
 
 Phil Pirozhkov, software engineer
+
+== Notes to self
+
+Before publishing:
+ - improve with `the-editor`
+ - run `vale <post>` and fix suggestions
+ - update RSS with `ruby rss-gen.rb`
