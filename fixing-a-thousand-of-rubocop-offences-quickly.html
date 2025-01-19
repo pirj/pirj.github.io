@@ -6,8 +6,7 @@
 <article>
   @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
 
-
-  18-Apr-2019 <strong>Fixing a thousand of RuboCop offences quickly</strong>
+  <h4>18-Apr-2019 Fixing a thousand of RuboCop offences quickly</h4>
 
   In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an <code>RSpec::Matcher::Countable</code> module to make the following code possible:
 

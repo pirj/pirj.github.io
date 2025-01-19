@@ -13,7 +13,7 @@ articles = Dir['*.html'] - ['index.html']
 
 articles.map! do |name|
   article = File.read(name).lines
-  head = article[article.index { |line| line =~ /@/ } + 3]
+  head = article[article.index { |line| line =~ /@/ } + 2]
   date = Date.parse head
   title = head.match(/>.*</)[0][1...-1]
   headline = article[article.index { |line| line =~ /@/ } + 6].strip

@@ -5,57 +5,71 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
-  <lastBuildDate>Sat, 18 Jul 2020 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Sun, 22 Sep 2024 00:00:00 +0000</pubDate>
+  <lastBuildDate>Sun, 19 Jan 2025 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
-  <title>Sidekiq/Active Job style guide</title>
+  <title>22-Sep-2024 Keeping personal digital notes</title>
+  <link>https://fili.pp.ru/keeping-personal-digital-notes.html</link>
+  <description>Various types of. Quick ideas I want to jot down to think of later, quick thoughts to remember to buy groceries, tools I want to employ in my daily workflow, startup ideas, jokes I want to sharpen before telling my friends and so on. An article I want to read later. A new album that came out, but I won't have sufficient focus and time to listen to until I travel somewhere in a car or with headphones. Game announcements, Kickstarter campaigns, you name it.</description>
+  <pubDate>Sun, 22 Sep 2024 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">58aeb05f-9486-e6e5-4790-459ee01cb3ae</guid>
+</item>
+<item>
+  <title>30-May-2021 An advice to open-source project maintainers</title>
+  <link>https://fili.pp.ru/advise-to-open-source-maintainers.html</link>
+  <description>This drains emotional energy, and leads to the burn-out sooner or later.</description>
+  <pubDate>Sun, 30 May 2021 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">58a8ed42-348a-c799-9a33-3c0f83fab487</guid>
+</item>
+<item>
+  <title>18-Jul-2020 Sidekiq/Active Job style guide</title>
   <link>https://fili.pp.ru/active-job-sidekiq-style-guide.html</link>
-  <description></description>
+  <description>It's based on:</description>
   <pubDate>Sat, 18 Jul 2020 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">94062fad-bfbf-6468-9474-0a21f40b43ea</guid>
+  <guid isPermaLink="false">5e0fbe39-e5e5-6fde-0809-b818faa2ff51</guid>
 </item>
 <item>
-  <title>Questions to Ask in a Job Interview</title>
+  <title>26-Apr-2020 Questions to Ask in a Job Interview</title>
   <link>https://fili.pp.ru/questions-to-ask-in-a-job-interview.html</link>
-  <description></description>
+  <description>That's all I know before an interview. But the question "do you want to know something about the company" during an interview puzzles me.</description>
   <pubDate>Sun, 26 Apr 2020 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">320c63f0-cabd-7079-05b0-28237d5ea5a2</guid>
+  <guid isPermaLink="false">a63c25a5-a67a-eb94-736a-b51b8430b06a</guid>
 </item>
 <item>
-  <title>Leaky Constants</title>
+  <title>23-Jul-2019 Leaky Constants</title>
   <link>https://fili.pp.ru/leaky-constants.html</link>
   <description></description>
   <pubDate>Tue, 23 Jul 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">25d7b15c-7019-1d0e-3a46-bbec3a839c1d</guid>
+  <guid isPermaLink="false">8a8081c6-2f23-862e-60c0-8b66c0568efc</guid>
 </item>
 <item>
-  <title>Fixing RSpec/SubjectStub Cop</title>
+  <title>30-Jun-2019 Fixing RSpec/h4 Cop</title>
   <link>https://fili.pp.ru/fixing-rspec-subject-stub-cop.html</link>
-  <description></description>
+  <description>rubocop-rspec is enforcing RSpec Style Guide, of which I'm one of the editors. It is providing many more options to enforce consistency of the code style and find common flaws in your project's test code. The guide and rubocop-rspec are, unfortunately, not completely in sync, but eventually they will be.</description>
   <pubDate>Sun, 30 Jun 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">f1954aa6-e2b7-3b8a-4232-6219763c614a</guid>
+  <guid isPermaLink="false">1e0a9437-a73a-bebf-4867-3e4e51b6b1dc</guid>
 </item>
 <item>
-  <title>Open Source, Biochemistry, and Happiness!</title>
+  <title>08-Jun-2019 Open Source, Biochemistry, and Happiness!</title>
   <link>https://fili.pp.ru/open-source-biochemistry-and-happiness.html</link>
-  <description></description>
+  <description>We, software developers, are those guys envied by many, because of a significantly higher chances to get satisfaction from what we do. Some say only 5% of the world population are happy about what they do. Are you?</description>
   <pubDate>Sat, 8 Jun 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">b10f0543-d344-29f4-b918-69535b113b54</guid>
+  <guid isPermaLink="false">ff950561-ef51-7bd4-1874-5e2dc5e58eeb</guid>
 </item>
 <item>
-  <title>One-line Procfile manager</title>
+  <title>03-Jun-2019 One-line Procfile manager</title>
   <link>https://fili.pp.ru/oneline-procfile-manager.html</link>
   <description></description>
   <pubDate>Mon, 3 Jun 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">ed48ac97-97d3-d2e2-d5ed-99617324b6bd</guid>
+  <guid isPermaLink="false">b84a8f94-ef2c-4949-13b8-55c99bae189b</guid>
 </item>
 <item>
-  <title>Fixing a thousand of RuboCop offences quickly</title>
+  <title>18-Apr-2019 Fixing a thousand of RuboCop offences quickly</title>
   <link>https://fili.pp.ru/fixing-a-thousand-of-rubocop-offences-quickly.html</link>
   <description></description>
   <pubDate>Thu, 18 Apr 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">7494932d-7acc-9bae-1d07-949c840fe714</guid>
+  <guid isPermaLink="false">3125cae9-c348-a110-1747-39d99133e02e</guid>
 </item>
 
 </channel>
