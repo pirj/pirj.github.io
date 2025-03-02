@@ -1,18 +1,14 @@
-body {
-  background-color: #ffe;
-}
+@media (min-width:320px) { body { padding: 1em; } }
+@media (min-width:481px) { body { padding: 1em 4em; } }
+
 article {
-  white-space: pre-line;
-  font-family: Monaco;
-  font-size: 0.9em;
-  margin: 5% 10%;
+  font-family: monospace;
 }
 article pre {
   white-space: pre;
   overflow-x: auto;
   margin: 0 0 -1em 0;
   padding-top: 1em;
-  font-size: 1.1em;
   background-color: #eee;
 }
 article code {
