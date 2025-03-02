@@ -13,7 +13,7 @@ article pre {
 }
 article code {
   background-color: #eee;
-  font-family: Monaco;
+  padding: 0 0.2em;
 }
 footer {
   opacity: 0.1;
