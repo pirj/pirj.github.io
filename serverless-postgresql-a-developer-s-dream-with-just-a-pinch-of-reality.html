@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset=utf-8>
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+<link rel=stylesheet href=article.css type=text/css>
+
+<article>
+  @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
+
+  <h4>02-Mar-2025 Serverless Postgres: A Developer's Dream with just a Pinch of Reality</h4>
+
+  Firebase has been around for 15 years with its <a href=https://firebase.google.com/docs/database>real-time database offering</a>.
+  Firebase is owned by Google for 10 years, and they provide <a href=https://firebase.google.com/docs/firestore>a more flexible store</a> for nearly as long.
+  But despite having plenty of goodies, they only offered a document database.
+  They've missed what makes a database great: consistency enforcement, formally defined data relations, structured queries.
+  Their new <a href=https://firebase.google.com/docs/data-connect>data connect</a> is to fill the gap, but there are plenty of products on the market that occupied this niche years ago.
+
+  <h3>The Problem <em>[with the tedious back-end development]</em></h3>
+
+  Nowdays, the back-end development is no as fun as it used to be before reactive JavaScript frameworks became predominant.
+  Last years, the back-end is viewed as a necessity, an API backbone, hidden from the eyes, that serves the only purpose - to persist and to provide data from the underlying storage.
+  Well, to be fair, sometimes the back-end is also relied on to:
+  <ul>
+    <li>send emails (not by itself, obviously, via third-party transactional email providers)</li>
+    <li>send app push notifications (via third-party service providers)</li>
+    <li>clean up data (from the storage)</li>
+    <li>perform tasks that can be postponed, or the user can wait for</li>
+    <li>receiving data from some third-party service and processing it</li>
+  </ul>
+
+  But the back-end gives up, offloading its previously integral parts to third-party providers: automating between third-party service providers (hi, Zapier), image resizing, file storage and uploads, serving uploads, serving static files like JavaScript/CSS and images, user authentication, user management, caching, providing analytical data, pub-sub and real-time data, even logging.
+  As more and more is offloaded to third-party service providers and is handled in the browser by the front-end code, the role of the back-end thins out.
+  To an extent when architectures arise that offer a backend-less approach. Well, the back-end and servers are still involved, just not owned or directly managed by us.
+
+  Self-hosting Postgres, scaling it, and keeping it <a href=https://www.postgresql.org/docs/current/high-availability.html>highly available</a> is not an easy task. And it's a burden, taking the focus away from your business goals.
+
+  <h3>The Promise</h3>
+
+  The missing part in the jigsaw was the conventional relational database.
+
+  Once I've heard about <a href=https://supabase.com/>Supabase</a>, a full Postgres database accessible from the front-end via a JS API, rocking <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a> allowing for granular user access to data, I wanted to do some side project with it.
+
+  The first time I've had a chance to work with a "fully-managed database in the cloud" was when we've migrated our Postgres database from Heroku to AWS RDS in one of the companies I worked with in the past. And my lord, that was a <s>disaster</s> waste of time.
+  Not only the migration itself took months, had few unofficially documented cases, it had the same 500 <mark>active</mark> connections cap, we lost point-in-time recovery feature, deal with complicated deployment rules in a cryptic vendor-specific <s>XML</s> file format, use vendor-specific observability, and the database started costing us two times as much.
+  Surprisingly (in a bad way), it also turned out that now we have to <a href=https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html>manually deal with upgrading major versions of Postgres</a> which Heroku was handling for us.
+  It's a long story for another time.
+
+  Being a mostly optimistic person, I was still eager to try Postgres in the cloud.
+  I already host this blog as a static site.
+  Adding comments, Medium-like <a href=https://help.medium.com/hc/en-us/articles/214406358-About-highlights>highlights</a> and <a href=https://help.medium.com/hc/en-us/articles/214035868-Leave-a-note>contextual notes</a> and ↓↑ votes is what comes to mind and what is possible and easy to persist to Supabase.
+
+  There's a whole site listing projects <a href=https://www.madewithsupabase.com/>made with Supabase</a>, and it's just what was done before <a href=https://supabase.com/ga>Supabase went GA</a>.
+
+  Can you imagine that you can have a whole bunch of options to sign up users, and let them fetch and save only the data you declared as accessible to them?
+  <ol>
+    <li>Any user can add a new `article` record</li>
+    <li>Only the user can change the text or the title of their article</li>
+    <li>Any user can add a comment on any other user's article</li>
+    <li>Only the comment author or the article author can remove a comment</li>
+    <li>You can vote on articles and comments, but only the ones you're not an author of</li>
+  </ol>
+
+  Database backups, scaling, high-availability, underlying "disk" storage, engine version upgrades, connection pooling - are those problems all transparently handled for you.
+
+  Isn't this beautiful?
+
+  It is worth saying that Supabase is not the only one.
+  I've discovered a few alternatives (in the order I've discovered them): <a href=https://www.prisma.io/>Prisma</a> - a battle-tested <a href=https://www.prisma.io/orm>ORM</a> that can be used with Supabase, and <a href=https://www.prisma.io/blog/announcing-prisma-postgres-early-access>recently</a> their own <a href=https://www.prisma.io/postgres>cloud Postgres</a>, still in early access; <a href=https://www.thenile.dev>Nile</a>; <a href=https://neon.tech>Neon</a>; and <a href=https://backendless.com/features/backendless-core/backendless-database>more...</a>.
+
+  Does it work the way it's promised? I've built <a href=https://exclusively.pro/>a project</a> backed by Supabase. Here's the reality...
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</article>

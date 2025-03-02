@@ -5,10 +5,17 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Sun, 22 Sep 2024 00:00:00 +0000</pubDate>
-  <lastBuildDate>Sun, 19 Jan 2025 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Sun, 2 Mar 2025 00:00:00 +0000</pubDate>
+  <lastBuildDate>Sun, 2 Mar 2025 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
+  <title>02-Mar-2025 Serverless Postgres: A Developer's Dream with just a Pinch of Reality</title>
+  <link>https://fili.pp.ru/serverless-postgresql-a-developer-s-dream-with-just-a-pinch-of-reality.html</link>
+  <description>But despite having plenty of goodies, they only offered a document database.</description>
+  <pubDate>Sun, 2 Mar 2025 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">8b73e596-d96a-60a9-9711-7954bddad467</guid>
+</item>
+<item>
   <title>22-Sep-2024 Keeping personal digital notes</title>
   <link>https://fili.pp.ru/keeping-personal-digital-notes.html</link>
   <description>Various types of. Quick ideas I want to jot down to think of later, quick thoughts to remember to buy groceries, tools I want to employ in my daily workflow, startup ideas, jokes I want to sharpen before telling my friends and so on. An article I want to read later. A new album that came out, but I won't have sufficient focus and time to listen to until I travel somewhere in a car or with headphones. Game announcements, Kickstarter campaigns, you name it.</description>
