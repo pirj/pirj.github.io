@@ -5,9 +5,7 @@
 <link rel=stylesheet href=article.css type=text/css>
 
 <article>
-  <h3>
-    @═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong>
-  </h3>
+  <h3>@═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong></h3>
 
   <h4>02-Mar-2025 "Serverless" Postgres: A Developer's Dream with just a Pinch of Reality</h4>
 
@@ -15,62 +13,74 @@
     Firebase has been around for 15 years with its <a href=https://firebase.google.com/docs/database>real-time database offering</a>.
     Firebase is owned by Google for 10 years, and they provide <a href=https://firebase.google.com/docs/firestore>a more flexible store</a> for nearly as long.
     But despite having plenty of goodies, they only offered a document database.
-    They've missed what makes a database great: consistency enforcement, formally defined data relations, structured queries.
-    Their new <a href=https://firebase.google.com/docs/data-connect>data connect</a> is to fill the gap, but there are plenty of products on the market that occupied this niche years ago.
+    The niche of a relational database was vacant. Until Supabase took it.
+    Consistency enforcement, formally defined data relations, structured queries make a relational database stand out.
+    Firebase tries to catch up with its <a href=https://firebase.google.com/docs/data-connect>data connect</a>.
+    There are numerous other products on the serverless relational database market.
   </p>
 
-  <h3>The Problem <em>[with the tedious back-end development]</em></h3>
+  <h3>The Problem</h3>
 
   <p>
-    Nowdays, the back-end development is no as fun as it used to be before reactive JavaScript frameworks became predominant.
-    Last years, the back-end is viewed as a necessity, an API backbone, hidden from the eyes, that serves the only purpose - to persist and to provide data from the underlying storage.
-    Well, to be fair, sometimes the back-end is also relied on to:
-  </p>
-
-  <ul>
-    <li>send emails (not by itself, obviously, via third-party transactional email providers)</li>
-    <li>send app push notifications (via third-party service providers)</li>
-    <li>clean up data (from the storage)</li>
-    <li>perform tasks that can be postponed, or the user can wait for</li>
-    <li>receiving data from some third-party service and processing it</li>
-  </ul>
-
-  <p>
-    But the back-end gives up, offloading its previously integral parts to third-party providers: automating between third-party service providers (hi, Zapier), image resizing, file storage and uploads, serving uploads, serving static files like JavaScript/CSS and images, user authentication, user management, caching, providing analytical data, pub-sub and real-time data, even logging.
-    As more and more is offloaded to third-party service providers and is handled in the browser by the front-end code, the role of the back-end thins out.
-    To an extent when architectures arise that offer a backend-less approach. Well, the back-end and servers are still involved, just not owned or directly managed by us.
+    Lately, back-end is perceived as an unavoidable necessity, an API provider for browser and mobile apps, buried down.
+    Sometimes, it serves the only purpose - to store and provide data.
   </p>
 
   <p>
-    Self-hosting Postgres, scaling it, and keeping it <a href=https://www.postgresql.org/docs/current/high-availability.html>highly available</a> is not an easy task. And it's a burden, taking the focus away from your business goals.
+    Back-end thins out, offloading logic to <em>third-party service providers</em>:
+    automation (Zapier);
+    image resizing, file uploads serving static assets (AWS S3);
+    DDoS protection, caching and load balancing (Cloudflare);
+    user authentication (Auth0 and WorkOS);
+    user management (Okta);
+    providing analytical data (Looker);
+    full-text search (Algolia);
+    pub-sub and real-time data;
+    logging;
+    transactional and bulk emails, push notifications;
+    ... you name it.
+    New architectures offer a <em>backend-less approach</em>.
+    Well, the back-end and <em>servers are still involved, just not owned or directly managed by us</em>.
+  </p>
+
+  <p>
+    Back-end kept holding on to databases, which remained part of the core in every product built.
+    Self-hosting databases, be it Redis, Postgres, or any other - scaling it, and keeping it <a href=https://www.postgresql.org/docs/current/high-availability.html>highly available</a> is hard.
+    And it's a <mark>burden, taking the focus away from your business goals</mark>.
+  </p>
+
+  <p>
+    The missing part in the jigsaw was a relational database managed by a third-party.
+  </p>
+
+  <p>
+    Not missing anymore.
   </p>
 
   <h3>The Promise</h3>
 
   <p>
-    The missing part in the jigsaw was the conventional relational database.
+    <a href=https://supabase.com/>Supabase</a>, a full Postgres database accessible from the front-end via JavaScript API, allowing <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a> for granular user access to data, authentication, file uploads, real-time streaming, vector storage, message queues, and background job processing sounds just fantastic.
+    Yet, it is real.
   </p>
 
   <p>
-    Once I've heard about <a href=https://supabase.com/>Supabase</a>, a full Postgres database accessible from the front-end via a JS API, rocking <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a> allowing for granular user access to data, I wanted to do some side project with it.
+    Just imagine the possibilities.
+    <em>Adding dynamic features</em> as Medium-like <a href=https://help.medium.com/hc/en-us/articles/214406358-About-highlights>highlights</a>, <a href=https://help.medium.com/hc/en-us/articles/214035868-Leave-a-note>contextual notes</a>, comments; Reddit-like ↓↑ votes <em>to a static site becomes trivial</em>.
   </p>
 
   <p>
-    The first time I've had a chance to work with a "fully-managed database in the cloud" was when we've migrated our Postgres database from Heroku to AWS RDS in one of the companies I worked with in the past. And my lord, that was a <s>disaster</s> waste of time.
-    Not only the migration itself took months, and was a process requiring constant supervision, had few unofficially documented success stories, it had the same 500 <mark>active</mark> connections cap, we lost point-in-time recovery feature, deal with complicated deployment rules in a cryptic vendor-specific <s>XML</s> file format, use vendor-specific observability, and the database started costing us two times as much.
-    Surprisingly (in a bad way), it also turned out that now we have to <a href=https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html>manually deal with upgrading major versions of Postgres</a> which Heroku was handling for us.
-    It's a long story for another time.
+    There's a whole list of projects <a href=https://www.madewithsupabase.com/>made with Supabase</a>, and it's a small subset of what was done before <a href=https://supabase.com/ga>Supabase went GA</a>.
   </p>
 
-  <p>
-    Being a mostly optimistic person, I was still eager to try Postgres in the cloud.
-    I already host this blog as a static site.
-    Adding comments, Medium-like <a href=https://help.medium.com/hc/en-us/articles/214406358-About-highlights>highlights</a> and <a href=https://help.medium.com/hc/en-us/articles/214035868-Leave-a-note>contextual notes</a> and ↓↑ votes is what comes to mind and what is possible and easy to persist to Supabase.
-  </p>
+  <blockquote><a href=https://www.producthunt.com/products/supabase#supabase-b37accde-66c0-4c60-bc5c-2634afa7cfe2>more than a third of the current YC are building with Supabase</a></blockquote>
 
   <p>
-    There's a whole site listing projects <a href=https://www.madewithsupabase.com/>made with Supabase</a>, and it's just what was done before <a href=https://supabase.com/ga>Supabase went GA</a>.
+    Wow!
+    That means something more complicated than just adding comments to a static site can be possible, right?
   </p>
+
+  <h3>Thought experiment</h3>
 
   <p>
     Can you imagine that you can have a whole bunch of options to sign up users, and let them fetch and save only the data you declared as accessible to them?
@@ -85,10 +95,12 @@
 
   <p>
     Database backups, scaling, high-availability, underlying "disk" storage, engine version upgrades, connection pooling - are those problems all transparently handled for you.
+    <em>Saving big on development</em> and DB maintenance time looks plausible.
+    <em>And no more back-end development or maintenance either!</em>
   </p>
 
   <p>
-    Isn't this beautiful?
+    Isn't this beautiful? 🥹
   </p>
 
   <p>
@@ -97,7 +109,51 @@
   </p>
 
   <p>
-    Does it work the way it's promised? I've built <a href=https://exclusively.pro/>a project</a> backed by Supabase. Here's the reality...
+    How does it work internally? At a glance it's a mix of (realistically-looking pseudocode below):
+  </p>
+  <ol>
+    <li>
+      A JS wrapper around a protocol allowing to access <a href=https://docs.postgrest.org>Postgres via HTTP</a>
+      <pre>
+        db.from('acticles').all()
+      </pre>
+    </li>
+    <li>
+      <a href=https://supabase.com/docs/reference/javascript/auth-api>authentication</a>
+      <pre>
+        auth.login('username', 'password')
+      </pre>
+      or
+      <pre>
+        auth.social.linkedInOIDC.signIn()
+      </pre>
+    </li>
+    <li>
+      <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a> policies
+      <pre>
+        ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+        CREATE POLICY "Fetch own articles"
+          ON "public"."articles"
+          TO authenticated
+          USING ( current_user_id = author_id );
+      </pre>
+    </li>
+    <li>
+      <a href=https://www.postgresql.org/docs/current/queries-with.html>Common Table Expressions</a>
+      <pre>
+        WITH auth AS (
+          SELECT uid AS current_user_id FROM auth.sessions WHERE session_id = 'foo-bar-baz'
+        )
+          SELECT * FROM articles;
+      </pre>
+    </li>
+  </ol>
+  <p>
+    By stacking this together, you get a Postgres database that can be accessed via a JS API, and provide row-level granular access for users.
+  </p>
+
+  <p>
+    I've built <a href=https://exclusively.pro/>a project</a> backed by Supabase. Did it work the way it's promised, the way I imagined it to work? The reality of <a href=/serverless-postgres-bitter-reality.html>turned out to be completely different</a>...
   </p>
 
   <footer>

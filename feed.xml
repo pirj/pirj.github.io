@@ -5,20 +5,27 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Sun, 2 Mar 2025 00:00:00 +0000</pubDate>
-  <lastBuildDate>Sun, 2 Mar 2025 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Wed, 12 Mar 2025 00:00:00 +0000</pubDate>
+  <lastBuildDate>Wed, 12 Mar 2025 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
-  <title>02-Mar-2025 Serverless Postgres: A Developer's Dream with just a Pinch of Reality</title>
+  <title>12-Mar-2025 "Serverless" Postgres: Bitter Reality</title>
+  <link>https://fili.pp.ru/serverless-postgres-bitter-reality.html</link>
+  <description></description>
+  <pubDate>Wed, 12 Mar 2025 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">20fa27f1-3217-c831-bba8-30e48ee36d95</guid>
+</item>
+<item>
+  <title>02-Mar-2025 "Serverless" Postgres: A Developer's Dream with just a Pinch of Reality</title>
   <link>https://fili.pp.ru/serverless-postgres-a-developer-s-dream-with-just-a-pinch-of-reality.html</link>
-  <description>But despite having plenty of goodies, they only offered a document database.</description>
+  <description>Firebase is owned by Google for 10 years, and they provide a more flexible store for nearly as long.</description>
   <pubDate>Sun, 2 Mar 2025 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">8b73e596-d96a-60a9-9711-7954bddad467</guid>
+  <guid isPermaLink="false">5d1adee4-819d-473f-cd1d-3e2786823bd9</guid>
 </item>
 <item>
   <title>22-Sep-2024 Keeping personal digital notes</title>
   <link>https://fili.pp.ru/keeping-personal-digital-notes.html</link>
-  <description>Various types of. Quick ideas I want to jot down to think of later, quick thoughts to remember to buy groceries, tools I want to employ in my daily workflow, startup ideas, jokes I want to sharpen before telling my friends and so on. An article I want to read later. A new album that came out, but I won't have sufficient focus and time to listen to until I travel somewhere in a car or with headphones. Game announcements, Kickstarter campaigns, you name it.</description>
+  <description></description>
   <pubDate>Sun, 22 Sep 2024 00:00:00 +0000</pubDate>
   <guid isPermaLink="false">58aeb05f-9486-e6e5-4790-459ee01cb3ae</guid>
 </item>
@@ -51,11 +58,11 @@
   <guid isPermaLink="false">8a8081c6-2f23-862e-60c0-8b66c0568efc</guid>
 </item>
 <item>
-  <title>30-Jun-2019 Fixing RSpec/h4 Cop</title>
+  <title>30-Jun-2019 Fixing RSpec Cop</title>
   <link>https://fili.pp.ru/fixing-rspec-subject-stub-cop.html</link>
   <description>rubocop-rspec is enforcing RSpec Style Guide, of which I'm one of the editors. It is providing many more options to enforce consistency of the code style and find common flaws in your project's test code. The guide and rubocop-rspec are, unfortunately, not completely in sync, but eventually they will be.</description>
   <pubDate>Sun, 30 Jun 2019 00:00:00 +0000</pubDate>
-  <guid isPermaLink="false">1e0a9437-a73a-bebf-4867-3e4e51b6b1dc</guid>
+  <guid isPermaLink="false">0a2b09a8-6420-ac58-52d6-5e542513b1df</guid>
 </item>
 <item>
   <title>08-Jun-2019 Open Source, Biochemistry, and Happiness!</title>

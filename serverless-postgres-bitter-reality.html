@@ -1,0 +1,509 @@
+<!doctype html>
+<meta charset=utf-8>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+<link rel=stylesheet href=article.css type=text/css>
+
+<article>
+  <h3>@═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong></h3>
+
+  <h4>12-Mar-2025 "Serverless" Postgres: Bitter Reality</h4>
+
+  <blockquote><a href=https://supabase.com/ga>2500 new DBs daily</a>; <a href=https://github.com/supabase/supabase>80K stars on GitHub</a>; <a href=https://www.producthunt.com/golden-kitty-awards/hall-of-fame?year=2024>Product Hunt Golden Kitty Awards 2024 All-Around Runner-Up</a></blockquote>
+  <blockquote><a href=https://www.producthunt.com/products/supabase#supabase-b37accde-66c0-4c60-bc5c-2634afa7cfe2>more than a third of the current YC are building with Supabase</a></blockquote>
+
+  <p>
+    <a href=https://supabase.com>Supabase</a> looks supa-cool, and I wanted to get practical experience with it.
+    I built <a href=https://exclusively.pro>exclusively.pro</a> with Supabase.
+    The project is about preventing employees from holding multiple remote jobs simultaneously.
+    It <em>is a simple "who works where now"</em> registry, but <mark>building it with Supabase was a bitter-sour experience</mark>.
+  </p>
+
+  <p>
+    The article is a <em>cautionary tale</em>, encouraging developers to thoroughly weigh Supabase's <a href=/serverless-postgres-a-developer-s-dream-with-just-a-pinch-of-reality.html>advantages</a> and weaknesses against their project needs.
+  </p>
+
+  <p>
+    Supabase <a href=https://supabase.com/blog/supabase-local-dev>works hard</a> on improving the <a href=https://supabase.com/docs/guides/local-development>local development experience</a>.
+    Still, I immediately stumbled across a few surprises, and ended up adding crutches to my building flow.
+  </p>
+
+  <p>
+    The <a href=https://www.producthunt.com/products/supabase#supabase-ai-assistant-lw24>AI Assistant</a> doesn't work locally, only on supabase.com.
+  </p>
+
+  <h4>Edge functions: CORS boilerplate</h4>
+  <p>
+    No wonder, the back-end is still there, in a form of so-called <a href=https://supabase.com/docs/guides/functions>Edge functions</a>, <a href=https://supabase.com/docs/reference/javascript/functions-invoke>callable</a> portions of code with a short lifecycle that run on the server.
+  </p>
+
+  <p>
+    Invoking an edge function e.g. <code>supabase.functions.invoke('get-companies')</code> is no different from running a DB query <code>supabase.from('companies').select('linkedin_id, link')</code>.
+    HTTP requests hit the same host.
+    But for the DB, Supabase server supplies CORS headers, while for the edge functions it doesn't.
+    Boilerplate is required in edge functions code to allow calling them from the client-side JavaScript:
+  </p>
+  <pre>
+    Deno.serve(async (req) => {
+    if (req.method === 'OPTIONS') { // This is needed to invoke the function from a browser
+      const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
+      return new Response('ok', { headers: corsHeaders })
+    }
+
+    // process POST
+  </pre>
+
+  <h4>Edge functions: Confusion with `supabase functions serve`</h4>
+  <p>
+    The <code>supabase functions serve</code> command doesn't start serving supabase edge functions.
+    It just tails the logs.
+    Command-line flags <code>--env-file</code>, <code>--import-map</code>, and <code>--no-verify-jwt</code> are confusing.
+    If this command is just a log tail, how can those flags affect the locally running instance of Supabase?
+  </p>
+  <p>
+    To actually stop and restart functions, you have to run <code>supabase stop && supabase start</code>.
+    This is sometimes needed to unstuck e.g. edge functions that had a syntax error.
+  </p>
+
+  <h4>Edge functions: Per-user rate limits</h4>
+  <p>
+    If some users started abusing the app, I was worried to exceed the LinkedIn API limits, which LinkedIn very vaguely documents.
+
+    Supabase only has built-in rate limits for <a href=https://supabase.com/docs/guides/auth/rate-limits>authentication-related endpoints</a>.
+    For throttling edge function invocations, they <a href=https://supabase.com/docs/guides/auth/rate-limits>recommend</a> using a <mark>third-party Redis service</mark>.
+    I was immediately against introducing such a complexity.
+    Instead, I quickly implemented a naive <code>user_id</code>/<code>last_run_at</code> Postgres table that throttled concerning LinkedIn API requests to one request a day per user.
+  </p>
+
+  <h4>SQL: Aggregate functions</h4>
+  <p>
+    <a href=https://supabase.com/blog/postgrest-aggregate-functions>Aggregate functions</a> are <a href=https://github.com/orgs/supabase/discussions/28112>turned off by default</a> due to <q>prevent potential <mark>performance issues</mark></q>.
+    Preventing those issues by <a href=https://github.com/orgs/supabase/discussions/19517#discussioncomment-12263221>only allowing aggregate functions to the service_role</a> from edge functions is impossible.
+    StackOverflow's <a href=https://stackoverflow.com/questions/65612167/how-to-get-count-in-supabase/65716923#65716923>answer from Supabase's maintainer</a> seems outdated.
+  </p>
+
+  <h4>SQL and Edge functions: Storing encrypted information</h4>
+  <p>
+    For data security and privacy compliance, I planned to encrypt secret and private information.
+    Supabase has a <a href=https://supabase.com/docs/guides/database/vault>Vault</a> to store encrypted secrets, with encryption keys stored separately.
+
+    However, from edge functions, the Vault is inaccessible: <code>relation "public.vault.decrypted_secrets" does not exist</code>.
+  </p>
+  <blockquote><a href=https://supabase.com/docs/guides/database/vault#secrets>use these secrets</a> anywhere in your database: Postgres Functions, Triggers, and Webhooks</blockquote>
+  <p>
+    I am very sceptical if "anywhere" applies here, as this implies I <mark>have to employ Postgres Functions</mark> on top of edge functions to work with the Vault.
+    This adds even more complexity.
+  </p>
+
+  <hr/>
+
+  <p>
+    The Vault extension provides <code>create_secret()</code> and <code>update_secret()</code>, but no counterpart for an UPSERT.
+    You'll likely to have to implement it on your own by attempting a fetch first.
+  </p>
+
+  <h4>Granular access control</h4>
+  <p>
+    There are two main roles, one with row-level security enabled, and the "allow-all" <a href=https://supabase.com/docs/guides/api/api-keys#the-servicerole-key>"service_role"</a> that bypasses the <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a>.
+    From edge functions, using a more permissive role is convenient, while keeping the role that is used from the client-side JavaScript restrictive.
+  </p>
+  <pre>
+    const supabase = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) // WARNING: THIS BYPASSES THE RLS
+  </pre>
+
+  <p>
+    The <a href=https://www.reddit.com/r/Supabase/comments/120oh2p/comment/jdp3j84/>reasoning</a> behind having just two roles is clear.
+    In theory, you can create a <a href=https://supabase.com/docs/guides/storage/schema/custom-roles>custom role</a>, but in practice there's not much use for this.
+    And it's <em>impractical to have more than just those two roles. Even two!</em>
+    Connections are established per role, and even though most of them are just PgBouncer pool connections, still, the number of underlying connections would have to be divided between roles, effectively limiting the number of maximum simultaneously active connections per role.
+    It's a bottleneck, and better be avoided.
+  </p>
+
+  <p>
+    Confusingly, the "Target Roles" multiple select dropdown in the RLS policy editor lists numerous <a href=https://supabase.com/docs/guides/database/postgres/roles#supabase-roles>roles</a>: "anon", "authenticated", "authenticator", "dashboard_user", "pgbouncer", a number of "pgsodium*" roles, "postgres", "service_role", and a number of "supabase_*" roles.
+    Custom roles appear here, too.
+    But only <em>"anon" and "authenticated" are useful</em> for RLS.
+  </p>
+
+  <p>
+    None of those roles participate when implementing a <a href=https://supabase.com/docs/guides/database/postgres/custom-claims-and-role-based-access-control-rbac>flexible permission system</a>.
+  </p>
+
+  <h4>SQL: Joins</h4>
+  <p>
+    Filtering on a column from a joined table isn't documented in Supabase.
+    PostgREST, that backs Supabase's JavaScript API <a href=https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#embedded-filters>allows this</a>:
+  </p>
+  <pre>
+    supabase.from('companies_admins').select('id, companies ( linkedin_id )')
+
+    // Without a filter on the joined table
+    > Array [ {…}, {…} ]
+        0: Object { id: 112, companies: {…} }
+          companies: Object { linkedin_id: 101111111 }
+          id: 112
+        1: Object { id: 113, companies: {…} }
+          companies: Object { linkedin_id: 102222222 }
+          id: 113
+        length: 2
+
+    // With a filter on the joined table
+    supabase.from('companies_admins').select('id, companies ( linkedin_id )').eq('companies.linkedin_id', 101111111)
+
+    > Array [ {…}, {…} ]
+        0: Object { id: 112, companies: {…} }
+          companies: Object { linkedin_id: 101111111 }
+          id: 112
+        1: Object { id: 113, companies: null }
+          companies: null
+          id: 113
+        length: 2
+  </pre>
+  <p>
+    By default, joins are a LEFT OUTER JOIN (notice the <code>companies: null</code> in the second query result).
+  </p>
+
+  <p>
+    For an INNER join:
+  </p>
+  <pre>
+    // With a filter on the joined table with an INNER join
+    supabase.from('companies_admins').select('id, companies!inner ( linkedin_id )').eq('companies.linkedin_id', 101111111)
+
+    > Array [ {…} ]
+        0: Object { id: 112, companies: {…} }
+          companies: Object { linkedin_id: 101111111 }
+          id: 112
+        length: 1
+  </pre>
+
+  <hr/>
+
+  <p>
+    This can all be worked around, even though it takes an <mark>effort to figure out and get used to</mark>.
+    I could just file <a href=https://github.com/supabase/supabase/issues>issues</a> for those problems, but e.g. for <a href=https://github.com/orgs/supabase/discussions/19517#discussioncomment-12263221>this one</a> I haven't heard back for three weeks.
+  </p>
+
+  <p>
+    You don't have to remind me that Supabase is open-source, and I could have fixed all.
+    I've submitted <a href=https://github.com/supabase/supabase/pull/33392>one doc fix</a>, but I wanted to focus on <em>building my product</em>, <mark>not building Supabase</mark>.
+  </p>
+
+  <h3>Feedback loops</h3>
+
+  <p>
+    <a href=https://martinfowler.com/articles/developer-effectiveness.html#FeedbackLoops>Feedback loops</a> facilitate making informed decisions on how to proceed with development.
+    Examples of feedback are: a log entry pointing to where the error happened; product manager's comment on a work-in-progress feature; a red test run.
+    The faster you get feedback, and the more useful, detailed and precise it is, the less effort is wasted.
+    <em>Short feedback loops are essential for developers' and teams' effectiveness and productivity.</em>
+  </p>
+
+  <p>
+    My main complaint to Supabase is that <mark>lack and length of its feedback loops sink developer effectiveness, productivity and happiness</mark>, both for the AI-assisted development, and traditional human-only development.
+  </p>
+
+  <h4>Logging: bulk inserting 25'000 records</h4>
+  <blockquote>
+    Function failed due to not having enough compute resources (please check logs)
+  </blockquote>
+  <p>
+    Funny enough regarding the "please check logs" part, the logs contain exactly the same error message.
+    What is the cap on compute? How higher should it be to complete the task?
+    This feedback loop is long.
+  </p>
+
+  <h4>Logging: invoke an edge functions providing invalid input</h4>
+  <p>
+    HTTP 400 with JSON response:
+  </p>
+  <pre>
+    error: '"failed to parse tree path ([object Object])" (line 1, column 1)'
+  </pre>
+
+  <h4>Logging: invoke an edge function that misses an "async"</h4>
+  <p>
+    Omit an <code>async</code> function modifier, and you'll get just an HTTP 503 with no body, and useless JSON with just the HTTP headers in the Dashboard logs.
+  </p>
+  <pre>
+    await Promise.all(companiesToCreate.map((company) => { ... }))
+  </pre>
+
+  <h4>Logging: violating a uniqueness constraint</h4>
+  <p>
+    Attempt to insert a row that violates a uniqueness constraint in an edge function.
+    The edge function invocation returns an HTTP 504 (gateway timeout) <mark>after 2.5 minutes</mark>.
+    On such gateway timeout responses, CORS isn't set, so in the browser development console you'll only see:
+  </p>
+  <blockquote>
+    Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://pbawiprsmukdthskekii.supabase.co/functions/v1/confirm-authenticity. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 504.
+  </blockquote>
+  <p>
+    And a <code>Response body is not available to scripts (Reason: CORS Missing Allow Origin)</code>.
+  </p>
+  <p>
+    It really only needed to change an INSERT to an UPSERT to be fixed. But there's just no way you can get to this conclusion except by looking at the code.
+  </p>
+
+  <h4>JavaScript API error logging: Social login redirect</h4>
+  <p>
+    <a href=https://supabase.com/docs/guides/auth/social-login/auth-linkedin>Social login with LinkedIn</a> redirect worked to localhost:8000.
+    But it kept redirecting to localhost when ran from the production domain, even though <code>redirectTo</code> argument provided to <code>signInWithOAuth()</code>.
+    Alright, you have to specify the "Site URL" and "Redirect URLs" in the <a href=https://supabase.com/dashboard/project/_/auth/url-configuration>configuration</a>.
+    Setting the Site URL to "https://exclusively.pro/" and Redirect URLs to "https://exclusively.pro/, http://localhost:8000, http://localhost:8000/*" worked.
+    There are <mark>no errors, no warnings</mark> if this isn't set up correctly - it just redirected to the other location.
+  </p>
+
+  <h4>Syncing remote and local databases</h4>
+  <p>
+    This turned out to be necessary.
+    With some test seed data, resulting in a 4.5 MB <code>seed.sql</code> file, every <code>supabase db dump</code> or <code>supabase db dump --data-only -f seed.sql</code> <mark>was taking FIVE minutes</mark>.
+  </p>
+
+  <p>
+    Every schema dump had to be manually edited, as it was adding a line that didn't apply to the schema, and could not be loaded with <code>supabase db reset</code> locally:
+  </p>
+  <pre>
+    SELECT pg_catalog.setval('"public"."user_info_id_seq"', 5, true);
+  </pre>
+  <p>
+    I've renamed the <code>user_info</code> table to a more specific <code>user_handle</code>, but the seq name value retained the old name in the dump somehow.
+  </p>
+  <pre>
+    Seeding data from supabase/seed.sql...
+      failed to send batch: ERROR: relation "public.user_info_id_seq" does not exist (SQLSTATE 42P01)
+  </pre>
+
+  <h4>Dependency uptime</h4>
+  <p>
+    Even though the service provider supports status updates via email even on their free plan, there's no email notification option on the <a href=https://status.supabase.com>Supabase status</a> page.
+    RSS/Atom should be fine as an input for automated tools, though.
+  </p>
+
+  <h3>Performance</h3>
+
+  <p>
+    I expected a tiny test database to run blazingly fast on Supabase, almost indistinguishable from running it locally inside Docker.
+    The project is running on a <em>Pro plan</em>.
+    Compute size is <a href=https://supabase.com/docs/guides/platform/compute-and-disk>"Micro"</a>, the default for the plan.
+    Zero load.
+    The monthly quotas are not exhausted.
+    The database easily fits into 1 GB of RAM.
+  </p>
+
+  <h4>Fetching two joined records</h4>
+  <pre>
+    supabase.from('companies_admins').select('companies ( linkedin_external_id, name, link_uuid )')
+  </pre>
+
+  <p>
+    With 8 records total in the <code>companies</code> table, and just as few in the <code>companies_admins</code>, this query returns two rows, and <mark>takes 550 ms</mark>.
+    Just one trivial <code>SELECT auth.uid() AS uid) = user_id)</code> RLS policy is involved.
+  </p>
+
+  <h4>COUNT</h4>
+  <pre>
+    supabase
+      .from('connections')
+      .select('count()')
+      .eq('company_id', ...)
+      .not('employee_id', 'is', null)
+      .single()
+  </pre>
+
+  <p>
+    In a table with 45'000 records, two such queries (one with a <code>IS NULL</code> condition, and the other without) together take <mark>3 seconds</mark>.
+    A missing index you would think? No, adding indexes didn't help a single bit.
+  </p>
+
+  <hr/>
+
+  <p>
+    <mark>This is <b>supa</b> slow</mark>.
+  </p>
+
+  <h3>Price</h3>
+
+  <p>
+    We've seen so far what we get. And this isn't too bad if you fit into a $25/mo Pro plan. $10 of those go for the Micro compute (2 shared ARM cores, 1 GB RAM).
+    The next <a href=https://supabase.com/docs/guides/platform/compute-and-disk>sensible tier is Large</a>, with 2 dedicated ARM cores and 8 GB RAM.
+  </p>
+
+  <p>
+    For this brief comparison, I'll use <a href=https://elements.heroku.com/addons/heroku-postgresql>Heroku Postgres</a>, which runs on top of AWS.
+    For me, Heroku offers outstanding reliability and convenience for a managed Postgres instance.
+  </p>
+
+  <div class=scrolling>
+    <table>
+      <caption>March 2025. By the time you read this, those numbers, plan tiers etc can be outdated.</caption>
+      <tr>
+        <th>Provider</th>
+        <th>Plan</th>
+        <th>Price, $/mo</th>
+        <th>CPU</th>
+        <th>RAM, GB</th>
+        <th>Direct connections</th>
+        <th>Storage limit, GB</th>
+        <th>Point-in-time rollback</th>
+        <th>Daily backups retention, days</th>
+      </tr>
+      <tr>
+        <td rowspan=3><a href=https://elements.heroku.com/addons/heroku-postgresql>Heroku Postgres</a></td>
+        <td>Essential 1</td>
+        <td>$10</td>
+        <td></td>
+        <td></td>
+        <td>20</td>
+        <td>10</td>
+        <td>-</td>
+        <td>5</td>
+      </tr>
+
+      <tr>
+        <td>Standard 0</td>
+        <td>$50</td>
+        <td></td>
+        <td>4</td>
+        <td>120</td>
+        <td>64</td>
+        <td>4</td>
+        <td>25</td>
+      </tr>
+
+      <tr>
+        <td>Standard 3</td>
+        <td>$400</td>
+        <td></td>
+        <td>15</td>
+        <td>400</td>
+        <td>512</td>
+        <td>4</td>
+        <td>25</td>
+      </tr>
+
+      <tr>
+        <td rowspan=3>Supabase</td>
+        <td>Pro, Micro</td>
+        <td>$10</td>
+        <td>2, shared</td>
+        <td>1</td>
+        <td>60</td>
+        <td>8</td>
+        <td>-</td>
+        <td>7</td>
+      </tr>
+
+      <tr>
+        <td>Pro, Large</td>
+        <td>$110 + $7</td>
+        <td>2, dedicated</td>
+        <td>8</td>
+        <td>160</td>
+        <td>64 for $7</td>
+        <td>-</td>
+        <td>7</td>
+      </tr>
+
+      <tr>
+        <td>Pro, XL</td>
+        <td>$210 + $63 + $100</td>
+        <td>4, dedicated</td>
+        <td>16</td>
+        <td>240</td>
+        <td>512 for <a href=https://supabase.com/docs/guides/platform/backups#point-in-time-recovery>$63</a></td>
+        <td>7 for $100</td>
+        <td>7</td>
+      </tr>
+
+      <tr>
+        <td><a href=https://www.thenile.dev/pricing>Nile</a></td>
+        <td>Scale</td>
+        <td>$350 + $346</td>
+        <td>8 ?</td>
+        <td>?</td>
+        <td>?</td>
+        <td>512 for extra $346</td>
+        <td>?</td>
+        <td>7 ?</td>
+      </tr>
+
+      <tr>
+        <td><a href=https://www.prisma.io/pricing>Prisma</a></td>
+        <td>Business</td>
+        <td>$129 + $502</td>
+        <td>?</td>
+        <td>?</td>
+        <td>10 ?</td>
+        <td>512 for extra $502</td>
+        <td>?</td>
+        <td>?</td>
+      </tr>
+
+      <tr>
+        <td><a href=https://neon.tech/pricing>Neon</a></td>
+        <td>Business</td>
+        <td>$700</td>
+        <td>16</td>
+        <td>?</td>
+        <td>?</td>
+        <td>500</td>
+        <td>30</td>
+        <td>?</td>
+      </tr>
+    </table>
+  </div>
+
+  <p>
+    Features like High Availability, HIPAA compliance, support can cost extra.
+  </p>
+
+  <p>
+    Heroku doesn't count WAL towards the Storage Limit, Supabase does.
+    Heroku doesn't count IOPS and bandwidth, Supabase does.
+    Heroku doesn't react for months if you exceed your storage limit, even by 50%.
+  </p>
+
+  <blockquote>
+    Prisma Postgres is based on the observation that modern hardware is incredibly powerful and cheap which was recently promoted by Basecamp
+  </blockquote>
+  <p>
+    <a href=https://www.prisma.io/blog/announcing-prisma-postgres-early-access>Are you serious?</a>
+    Why is Prisma Postgres more expensive compared to Heorku, then?
+    Isn't <mark>everyone on the list more expensive than Heroku</mark>?
+  </p>
+
+  <hr/>
+
+  <p>
+    Speaking of modern bare-metal hardware, you could get a <em>6-core CPU, 64 GB of RAM and a 512 GB storage</em> for about <a href=https://www.hetzner.com/dedicated-rootserver/matrix-ex/>$49/mo</a>.
+    This makes it possible to deploy highly-available triple-redundant cluster of Postgres'es spanning several data centers for <em>under $200 a month</em>.
+  </p>
+
+  <h3>Compliance</h3>
+
+  <p>
+    It really bothered me that in addition to the internal unique LinkedIn identifier like <code>Y09Dr0pJaw</code> sufficient for my functional requirements, Supabase stores users email addresses.
+    An email address is considered information that can be used to identify a person.
+    But there is no option to tell Supabase not to store email addresses.
+  </p>
+
+  <p>
+    SOC2 will cost you <a href=https://www.reddit.com/r/Supabase/comments/1j1isij/supabase_7200year_for_soc2_making_it_costly_for>nearly $7200 a year</a>.
+  </p>
+
+  <h3>Conclusion</h3>
+
+  <p>
+    With all the complexity around Supabase, it's easy to build a system that is <mark>insecure, slow, hard to maintain, and costly to run</mark>.
+  </p>
+
+  <p>
+    The "serverless" development model with Postgres available from client-side JavaScript via some ad-hoc API, an <a href=https://www.prisma.io/orm>ORM</a>, or <a href=https://github.com/graphile/crystal>GrapQL</a> makes sense.
+    When you've figured out all the rough edges and undocumented tricks, <em>Supabase does its "Build in a weekend"</em> job, for small prototypes.
+    However, I would not rely on Supabase for "Scale to millions".
+  </p>
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</article>

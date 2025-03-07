@@ -7,7 +7,7 @@ article {
 article pre {
   white-space: pre;
   overflow-x: auto;
-  margin: 0 0 -1em 0;
+  margin: 0;
   padding-top: 1em;
   background-color: #eee;
 }
@@ -17,4 +17,24 @@ article code {
 }
 footer {
   opacity: 0.1;
+}
+
+blockquote::before { content: '| '; }
+blockquote { margin: 1em; font-style: italic; color: grey; }
+
+mark { background-color: hsla(50, 100%, 80%, 0.6); }
+em { background-color: hsla(80, 100%, 80%, 0.6); font-style: normal; }
+
+hr {
+  opacity: 0.3;
+  padding-top: 0.5em;
+  border: none;
+  &::after { margin-left: 1em; content: "----------------"; }
+}
+
+div.scrolling { width: 100%; overflow-x: auto; }
+
+table {
+  border-collapse: collapse;
+  & td, th { border: 1px solid lightgrey; padding: 0.3em; }
 }
