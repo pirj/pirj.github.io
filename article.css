@@ -1,3 +1,5 @@
+body { overflow-x: hidden; }
+
 @media (min-width:320px) { body { padding: 1em; } }
 @media (min-width:481px) { body { padding: 1em 4em; } }
 
