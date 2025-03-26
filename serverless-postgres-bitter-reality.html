@@ -38,7 +38,7 @@
   </p>
 
   <p>
-    Invoking an edge function e.g. <code>supabase.functions.invoke('get-companies')</code> is no different from running a DB query <code>supabase.from('companies').select('linkedin_id, link')</code>.
+    Invoking an edge function e.g. <code>supabase.functions.invoke('get-companies')</code> is no different from running a DB query <code>supabase.from('companies').select('link')</code>.
     HTTP requests hit the same host.
     But for the DB, Supabase server supplies CORS headers, while for the edge functions it doesn't.
     Boilerplate is required in edge functions code to allow calling them from the client-side JavaScript:
