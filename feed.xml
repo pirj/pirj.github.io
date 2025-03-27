@@ -5,10 +5,17 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Wed, 12 Mar 2025 00:00:00 +0000</pubDate>
-  <lastBuildDate>Wed, 12 Mar 2025 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+  <lastBuildDate>Thu, 27 Mar 2025 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
+  <title>27-Mar-2025 Even big corps fail to speak to you in English</title>
+  <link>https://fili.pp.ru/big-corp-locale-fails.html</link>
+  <description>Just in case, you set the primary and preferred language to English in the OS and browser settings, and expect everything to be in English.</description>
+  <pubDate>Thu, 27 Mar 2025 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">a0171825-3a66-aeab-4285-19b3e6ed355f</guid>
+</item>
+<item>
   <title>12-Mar-2025 "Serverless" Postgres: Bitter Reality</title>
   <link>https://fili.pp.ru/serverless-postgres-bitter-reality.html</link>
   <description></description>
