@@ -41,3 +41,9 @@ table {
   border-collapse: collapse;
   & td, th { border: 1px solid lightgrey; padding: 0.3em; }
 }
+
+img { width: 100%; box-shadow: 1em 1em 2em grey; }
+img.half { max-width: 480px; }
+figure { margin: 2em; text-align: center; }
+
+i.larger-icon { font-style: normal; font-size: 1.2em; padding-right: 0.5em; }

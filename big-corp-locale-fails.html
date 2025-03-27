@@ -1,0 +1,202 @@
+<!doctype html>
+<meta charset=utf-8>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+<link rel=stylesheet href=article.css type=text/css>
+
+<article>
+  <h3>@═╦╣╚╗ <strong><a href=/>A mazing engineer</a></strong></h3>
+
+  <h4>27-Mar-2025 Even big corps fail to speak to you in English</h4>
+
+  <p>
+    English language is the de-facto <a href=https://en.wikipedia.org/wiki/English_as_a_lingua_franca>modern lingua franca</a>, used by default in computer software, online resources and services.
+    But even if you prefer English, you sometimes get nonsense.
+  </p>
+
+  <p>Three simple rules to <em>talk to users in their language and provide seamless user experience</em>:</p>
+  <ul>
+    <li>Respect what the browser sends you in <code>Accept-Language</code> request header</li>
+    <li>Persist that, and use it later in emails etc</li>
+    <li>Provide a choice, on the web page for non-authenticated users, or customer account settings</li>
+  </ul>
+
+  <p>Bad things happen if <mark>companies don't</mark>:</p>
+  <figure>
+    <img class=half alt="More involving than a captcha" src=images/quora-oauth.jpg>
+  </figure>
+
+  <hr/>
+
+  <p>
+    <i>
+      I reside in Turkey, but <mark>don't speak Turkish</mark>.
+      I don't use VPN.
+      <em>English is my primary and preferred language</em> in the browser (desktop Firefox, mobile Safari) settings, and in every service and web site.
+    </i>
+  </p>
+
+  <h3><i class=larger-icon>❌</i>Google sign in to Quora with Google on Mobile Safari</h3>
+
+  <p>Interestingly, Quora's content itself is in English, but Google inlay and the authentication page are not.
+
+  <figure>
+    <img class=half alt="Mixed feelings" src=images/quora-sign-in.png>
+  </figure>
+
+  <p>Even though I'm signed in to all my Google accounts.</p>
+
+  <figure>
+    <img class=half alt="Baska bir" src=images/quora-google.png>
+  </figure>
+
+  <p>
+    To be fair, it <em>works fine on desktop</em>.
+  </p>
+
+  <h3><i class=larger-icon>❌</i>Apple iCloud parti 🎉</h3>
+
+  <p>
+    iCloud loves to parti. And they're inviting!
+  </p>
+
+  <p>
+    This is all about email, but those emails are sent to a known customer, with an Apple Account.
+  </p>
+
+  <figure>
+    <img class=half alt="Baska bir" src=images/apple-icloud-party.png>
+  </figure>
+
+  <p>
+    Indeed, <em>my Apple Account's region is Türkiye</em>.
+    Some useful local apps are only available in the region-local App Store, so the region choice is obvious.
+    But that <mark>doesn't make me a Turkish-speaking person</mark>.
+  </p>
+
+  <figure>
+    <img class=half alt="Baska bir" src=images/apple-account.png>
+  </figure>
+
+  <p>
+    Confusingly, some emails are in English:
+  </p>
+
+  <figure>
+    <img class=half alt="Baska bir" src=images/apple-account-en.png>
+  </figure>
+
+  <h3><i class=larger-icon>❌</i>Google Calendar 📅</h3>
+
+  <p>
+    Let's add more languages to the mix!
+  </p>
+
+  <p>
+    A former colleague of mine, Pablo, originally from Spain, invited me for a chat.
+  </p>
+
+  <figure>
+    <img class=full alt="Holà" src=images/google-calendar-invitation.png>
+  </figure>
+
+  <p>
+    It is not a collage, it's one email message.
+  </p>
+
+  <h3><i class=larger-icon>❌</i>Microsoft's Xbox knows I'm a polyglot</h3>
+
+  <figure>
+    <img class=half alt="Mithridates VI" src=images/microsoft-polyglot.png>
+  </figure>
+
+  <p>
+    To be fair, I'm not making Xbox's life easier with two (my kid's is the second) Microsoft accounts and Xbox profiles on the same console.
+    Add the "Console system settings" to the mix, and notifications are barely possible to make right.
+    But I'm pretty sure <mark>none of my language settings is set to "Turkish"</mark>.
+  </p>
+
+  <h3><i class=larger-icon>❌</i>Unknown languages 𒅆𒂟</h3>
+
+  <p>
+    Telegram thinks that I can read Norwegian.
+    Text in a modal message in a desktop app that can't be copies and paste to translate.
+    In a privacy-sensitive context.
+  </p>
+
+  <figure>
+    <img class=half src=images/telegram-norse.jpg>
+  </figure>
+
+  <h3><i class=larger-icon>❌</i>Detect language by physical location</h3>
+
+  <p>
+    GoDaddy redirects to /tr-tr. Are their <mark>services region-specific</mark>? Quite unlikely.
+  </p>
+
+  <figure>
+    <img class=full alt="Go elsewhere" src=images/godaddy-redirect.png>
+  </figure>
+
+  <p>
+    In a nutshell, <a href=https://en.wikipedia.org/wiki/Internationalization_and_localization>i18n and l10n</a> are:
+  </p>
+  <blockquote>Internationalization is the process of designing a software application so that it can be adapted to various languages and regions without engineering changes.</blockquote>
+  <blockquote>Localization is the process of adapting internationalized software for a specific region or language by translating text and adding locale-specific components.</blockquote>
+
+  <h3><i class=larger-icon>✅</i>Good examples</h3>
+
+  <p>
+    Nothing special here: as expected, English everywhere.
+    Those companies <em>followed the simple rules</em>.
+  </p>
+
+  <figure><img class=half src=images/x-win.png></figure>
+
+  <figure><img class=half src=images/reddit-win.png></figure>
+
+  <p>
+    It's worth mentioning that Amazon has a region specific <i>amazon.com.tr</i> site, but they don't propose you to go there after detecting your location:
+  </p>
+  <figure><img class=half src=images/amazon-win.png></figure>
+
+  <figure><img class=half src=images/linkedin-win.png></figure>
+
+  <figure><img class=half src=images/facebook-win.png></figure>
+
+  <p>
+    Proposal to switch to region-specific page:
+  </p>
+  <figure><img class=full src=images/apple-win.png></figure>
+
+  <p>
+    Nearly perfect, just forgot to localize one text item:
+  </p>
+  <figure><img class=full src=images/zara-almost-win.png></figure>
+
+  <h3>Final thoughts</h3>
+
+  <p>
+    It's understandable that online store or a news sites show <em>region-specific content</em>.
+    Mixing English titles like "Best sellers" or "Breaking news" with non-English product and news titles would be messy.
+    Still, I prefer to <mark>understand at least something</mark> to consistently unreadable text.
+  </p>
+
+  <p>
+    Page translation is now available in mobile Safari, and desktop Firefox.
+    But why not <mark>do it right on the first try instead of forcing the user to make an additional step</mark> and translate on their side?
+    Users told you the language they know and understand, why would you want them to stretch?
+  </p>
+
+  <p>But follow those essential three rules: <em>use <code>Accept-Language</code>; save it; provide preferred language choice</em>.</p>
+
+  <i>Are there any other rules that I'm missing that are needed to talk to users in their language?</i>
+
+  <p>
+    Unnecessary technical detail <code>Accept-Language: en,en-US;q=0.7,ru;q=0.3</code>
+  </p>
+
+  <footer>
+    The content of this article is licensed under <a href=https://creativecommons.org/licenses/by-sa/4.0/>CC-BY-SA</a>.
+  </footer>
+</article>
