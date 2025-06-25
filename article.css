@@ -11,13 +11,14 @@ pre {
   white-space: pre;
   overflow-x: auto;
   margin: 0;
-  padding-top: 1em;
+  padding: 0.5em;
   background-color: #eee;
 }
 code {
   background-color: #eee;
   padding: 0 0.2em;
 }
+pre code { padding: 0; }
 footer {
   opacity: 0.1;
 }

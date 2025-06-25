@@ -114,38 +114,38 @@
   <ol>
     <li>
       A JS wrapper around a protocol allowing to access <a href=https://docs.postgrest.org>Postgres via HTTP</a>
-      <pre>
-        db.from('acticles').all()
-      </pre>
+<pre>
+  db.from('acticles').all()
+</pre>
     </li>
     <li>
       <a href=https://supabase.com/docs/reference/javascript/auth-api>authentication</a>
-      <pre>
-        auth.login('username', 'password')
-      </pre>
+<pre>
+  auth.login('username', 'password')
+</pre>
       or
-      <pre>
-        auth.social.linkedInOIDC.signIn()
-      </pre>
+<pre>
+  auth.social.linkedInOIDC.signIn()
+</pre>
     </li>
     <li>
       <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a> policies
-      <pre>
-        ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
-        CREATE POLICY "Fetch own articles"
-          ON "public"."articles"
-          TO authenticated
-          USING ( current_user_id = author_id );
-      </pre>
+<pre>
+  ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "Fetch own articles"
+    ON "public"."articles"
+    TO authenticated
+    USING ( current_user_id = author_id );
+</pre>
     </li>
     <li>
       <a href=https://www.postgresql.org/docs/current/queries-with.html>Common Table Expressions</a>
-      <pre>
-        WITH auth AS (
-          SELECT uid AS current_user_id FROM auth.sessions WHERE session_id = 'foo-bar-baz'
-        )
-          SELECT * FROM articles;
-      </pre>
+<pre>
+  WITH auth AS (
+    SELECT uid AS current_user_id FROM auth.sessions WHERE session_id = 'foo-bar-baz'
+  )
+    SELECT * FROM articles;
+</pre>
     </li>
   </ol>
   <p>

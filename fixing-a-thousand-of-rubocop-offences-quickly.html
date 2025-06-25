@@ -12,19 +12,19 @@
 
   In my current project we extensively use custom RSpec matchers. Some of which have countable qualifiers. Unfortunately, this specific piece of code is not reused, and I started looking at RSpec's internals in hopes it's there, and the only thing we need to do is include an <code>RSpec::Matcher::Countable</code> module to make the following code possible:
 
-  <pre class=ruby>
-    expect { perform! }.to send_notification(SpaceshipArrived).exactly(:twice)
-  </pre>
+<pre class=ruby>
+  expect { perform! }.to send_notification(SpaceshipArrived).exactly(:twice)
+</pre>
 
   Unfortunately, this module doesn't exist. Countable is used in <code>rspec-expectations</code>, and <code>rspec-mocks</code>, but its definition is spread out and not reusable. Hold my beer, I decided, I'll extract it. But there was another thing that immediately caught my eye:
 
-  <pre class=shell>
-    $ rubocop
-    Inspecting 144 files
-    CCWCCCCCCCCCCCCCCCCCCCWCWWCCCCWCWWCCCWCCCCCWWWWWCCWCCWCWCCWCWCWCCCCCCWWWCWCWCCCCCCCCWCWWCCCWCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+<pre class=shell>
+  $ rubocop
+  Inspecting 144 files
+  CCWCCCCCCCCCCCCCCCCCCCWCWWCCCCWCWWCCCWCCCCCWWWWWCCWCCWCWCCWCWCWCCCCCCWWWCWCWCCCCCCCCWCWWCCCWCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-    144 files inspected, 1324 offenses detected
-  </pre>
+  144 files inspected, 1324 offenses detected
+</pre>
 
   WHAT?! I started looking, there were 66 different cops, each detecting from singular to over a hundred offences. Also RuboCop version is out of date, 0.52.1 released back in December 2017 vs 0.67 being the current version. Keeping in mind the very active development pace of RuboCop, that's a lot.
 
@@ -32,29 +32,29 @@
 
   Luckily enough, RuboCop is not only capable of detecting offences, it also comes with an option to auto-correct them. I could auto-correct everything, and if I would:
 
-  <pre class=shell>
-    $ rubocop --auto-correct
-    144 files inspected, 1670 offenses detected, 1449 offenses corrected
+<pre class=shell>
+  $ rubocop --auto-correct
+  144 files inspected, 1670 offenses detected, 1449 offenses corrected
 
-    2 errors occurred:
-    An error occurred while Layout/ElseAlignment cop was inspecting /Users/pirj/source/rspec-dev/repos/rspec-expectations/benchmarks/match_array/failing_with_distinct_items.rb:31:8.
-    An error occurred while Layout/ElseAlignment cop was inspecting /Users/pirj/source/rspec-dev/repos/rspec-expectations/benchmarks/match_array/failing_with_duplicate_items.rb:28:8.
+  2 errors occurred:
+  An error occurred while Layout/ElseAlignment cop was inspecting /Users/pirj/source/rspec-dev/repos/rspec-expectations/benchmarks/match_array/failing_with_distinct_items.rb:31:8.
+  An error occurred while Layout/ElseAlignment cop was inspecting /Users/pirj/source/rspec-dev/repos/rspec-expectations/benchmarks/match_array/failing_with_duplicate_items.rb:28:8.
 
-    $ git diff --stat
-    126 files changed, 1098 insertions(+), 887 deletions(-)
+  $ git diff --stat
+  126 files changed, 1098 insertions(+), 887 deletions(-)
 
-    $ rspec
-    SyntaxError:
-      /Users/pirj/source/rspec-dev/repos/rspec-expectations/spec/rspec/matchers/built_in/eq_spec.rb:140: syntax error, unexpected end-of-input, expecting keyword_end
-    SyntaxError:
-      /Users/pirj/source/rspec-dev/repos/rspec-expectations/spec/rspec/matchers/built_in/exist_spec.rb:6: syntax error, unexpected '}'
+  $ rspec
+  SyntaxError:
+    /Users/pirj/source/rspec-dev/repos/rspec-expectations/spec/rspec/matchers/built_in/eq_spec.rb:140: syntax error, unexpected end-of-input, expecting keyword_end
+  SyntaxError:
+    /Users/pirj/source/rspec-dev/repos/rspec-expectations/spec/rspec/matchers/built_in/exist_spec.rb:6: syntax error, unexpected '}'
 
-    $ git checkout spec/rspec/matchers/built_in/eq_spec.rb spec/rspec/matchers/built_in/exist_spec.rb
+  $ git checkout spec/rspec/matchers/built_in/eq_spec.rb spec/rspec/matchers/built_in/exist_spec.rb
 
-    $ rspec
-    Finished in 5.22 seconds (files took 0.91972 seconds to load)
-    2247 examples, 2 failures, 5 pending
-  </pre>
+  $ rspec
+  Finished in 5.22 seconds (files took 0.91972 seconds to load)
+  2247 examples, 2 failures, 5 pending
+</pre>
 
   A couple things that I had to consider:
     - it wouldn't be possible to push the  +1090 -887 change through
@@ -69,14 +69,14 @@
 
   Yet another helpful RuboCop option to the help: <code>rubocop --auto-gen-config</code>. It creates a <code>.rubocop_todo.yml</code> file, disabling all the cops that have offences, including counts and configuration options:
 
-  <pre class=shell>
-    # Offense count: 127
-    # Cop supports --auto-correct.
-    # Configuration parameters: EnforcedStyle.
-    # SupportedStyles: when_needed, always, never
-    Style/FrozenStringLiteralComment:
-      Enabled: false
-  </pre>
+<pre class=shell>
+  # Offense count: 127
+  # Cop supports --auto-correct.
+  # Configuration parameters: EnforcedStyle.
+  # SupportedStyles: when_needed, always, never
+  Style/FrozenStringLiteralComment:
+    Enabled: false
+</pre>
 
   Not bad. Mostly manual work from that moment. Run <code>rubocop --only Style/FrozenStringLiteralComment</code>, visually check offences, (ok, mostly auto-) fix offences, remove the cop from <code>.rubocop_todo.yml</code>, commit.
 
@@ -84,14 +84,14 @@
 
   There were cops, e.g. <code>Layout/SpaceInsideHashLiteralBraces</code>, with several different styling options, e.g. <code>EnforcedStyleForEmptyBraces</code> and <code>EnforcedStyle</code>, each with several options.
 
-  <pre>
-                  EnforcedStyle > | space (default) | no_space | compact
-    ----------------------------- | - - - - - - - - | - - - -  | - - - -
-    v EnforcedStyleForEmptyBraces | - - - - - - - - | - - - -  | - - - -
-    ----------------------------- | --------------- | -------- | -------
-               no_space (default) | <b>92</b>              | 126      | 92
-                           space  | 105             | 139      | 105
-  </pre>
+<pre>
+                EnforcedStyle > | space (default) | no_space | compact
+  ----------------------------- | - - - - - - - - | - - - -  | - - - -
+  v EnforcedStyleForEmptyBraces | - - - - - - - - | - - - -  | - - - -
+  ----------------------------- | --------------- | -------- | -------
+             no_space (default) | <b>92</b>              | 126      | 92
+                         space  | 105             | 139      | 105
+</pre>
 
   In this case I went with the defaults, and 92 changes across the code.
 
@@ -105,10 +105,10 @@
 
   The impact on <code>rspec-mocks</code> was <a href=https://github.com/rspec/rspec-mocks/commit/3b909ed1a951bbca340ea98c27ab65da7f43881c>even more noticeable</a>, as it caused 280 warnings across the test suite and urged the author to come up with undesirable changes:
 
-  <pre class=ruby>
-    - let(:dbl) { double }
-    + let(:the_dbl) { double }
-  </pre>
+<pre class=ruby>
+  - let(:dbl) { double }
+  + let(:the_dbl) { double }
+</pre>
 
   that left their traces until modern days.
 

@@ -43,15 +43,15 @@
     But for the DB, Supabase server supplies CORS headers, while for the edge functions it doesn't.
     Boilerplate is required in edge functions code to allow calling them from the client-side JavaScript:
   </p>
-  <pre>
-    Deno.serve(async (req) => {
-    if (req.method === 'OPTIONS') { // This is needed to invoke the function from a browser
-      const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
-      return new Response('ok', { headers: corsHeaders })
-    }
+<pre>
+  Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') { // This is needed to invoke the function from a browser
+    const corsHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type' }
+    return new Response('ok', { headers: corsHeaders })
+  }
 
-    // process POST
-  </pre>
+  // process POST
+</pre>
 
   <h4>Edge functions: Confusion with `supabase functions serve`</h4>
   <p>
@@ -107,9 +107,9 @@
     There are two main roles, one with row-level security enabled, and the "allow-all" <a href=https://supabase.com/docs/guides/api/api-keys#the-servicerole-key>"service_role"</a> that bypasses the <a href=https://www.postgresql.org/docs/current/ddl-rowsecurity.html>row-level security</a>.
     From edge functions, using a more permissive role is convenient, while keeping the role that is used from the client-side JavaScript restrictive.
   </p>
-  <pre>
-    const supabase = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) // WARNING: THIS BYPASSES THE RLS
-  </pre>
+<pre>
+  const supabase = createClient(Deno.env.get('SUPABASE_URL'), Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')) // WARNING: THIS BYPASSES THE RLS
+</pre>
 
   <p>
     The <a href=https://www.reddit.com/r/Supabase/comments/120oh2p/comment/jdp3j84/>reasoning</a> behind having just two roles is clear.
@@ -134,31 +134,31 @@
     Filtering on a column from a joined table isn't documented in Supabase.
     PostgREST, that backs Supabase's JavaScript API <a href=https://docs.postgrest.org/en/v12/references/api/resource_embedding.html#embedded-filters>allows this</a>:
   </p>
-  <pre>
-    supabase.from('companies_admins').select('id, companies ( linkedin_id )')
+<pre>
+  supabase.from('companies_admins').select('id, companies ( linkedin_id )')
 
-    // Without a filter on the joined table
-    > Array [ {…}, {…} ]
-        0: Object { id: 112, companies: {…} }
-          companies: Object { linkedin_id: 101111111 }
-          id: 112
-        1: Object { id: 113, companies: {…} }
-          companies: Object { linkedin_id: 102222222 }
-          id: 113
-        length: 2
+  // Without a filter on the joined table
+  > Array [ {…}, {…} ]
+      0: Object { id: 112, companies: {…} }
+        companies: Object { linkedin_id: 101111111 }
+        id: 112
+      1: Object { id: 113, companies: {…} }
+        companies: Object { linkedin_id: 102222222 }
+        id: 113
+      length: 2
 
-    // With a filter on the joined table
-    supabase.from('companies_admins').select('id, companies ( linkedin_id )').eq('companies.linkedin_id', 101111111)
+  // With a filter on the joined table
+  supabase.from('companies_admins').select('id, companies ( linkedin_id )').eq('companies.linkedin_id', 101111111)
 
-    > Array [ {…}, {…} ]
-        0: Object { id: 112, companies: {…} }
-          companies: Object { linkedin_id: 101111111 }
-          id: 112
-        1: Object { id: 113, companies: null }
-          companies: null
-          id: 113
-        length: 2
-  </pre>
+  > Array [ {…}, {…} ]
+      0: Object { id: 112, companies: {…} }
+        companies: Object { linkedin_id: 101111111 }
+        id: 112
+      1: Object { id: 113, companies: null }
+        companies: null
+        id: 113
+      length: 2
+</pre>
   <p>
     By default, joins are a LEFT OUTER JOIN (notice the <code>companies: null</code> in the second query result).
   </p>
@@ -166,16 +166,16 @@
   <p>
     For an INNER join:
   </p>
-  <pre>
-    // With a filter on the joined table with an INNER join
-    supabase.from('companies_admins').select('id, companies!inner ( linkedin_id )').eq('companies.linkedin_id', 101111111)
+<pre>
+  // With a filter on the joined table with an INNER join
+  supabase.from('companies_admins').select('id, companies!inner ( linkedin_id )').eq('companies.linkedin_id', 101111111)
 
-    > Array [ {…} ]
-        0: Object { id: 112, companies: {…} }
-          companies: Object { linkedin_id: 101111111 }
-          id: 112
-        length: 1
-  </pre>
+  > Array [ {…} ]
+      0: Object { id: 112, companies: {…} }
+        companies: Object { linkedin_id: 101111111 }
+        id: 112
+      length: 1
+</pre>
 
   <hr/>
 
@@ -216,17 +216,17 @@
   <p>
     HTTP 400 with JSON response:
   </p>
-  <pre>
-    error: '"failed to parse tree path ([object Object])" (line 1, column 1)'
-  </pre>
+<pre>
+  error: '"failed to parse tree path ([object Object])" (line 1, column 1)'
+</pre>
 
   <h4>Logging: invoke an edge function that misses an "async"</h4>
   <p>
     Omit an <code>async</code> function modifier, and you'll get just an HTTP 503 with no body, and useless JSON with just the HTTP headers in the Dashboard logs.
   </p>
-  <pre>
-    await Promise.all(companiesToCreate.map((company) => { ... }))
-  </pre>
+<pre>
+  await Promise.all(companiesToCreate.map((company) => { ... }))
+</pre>
 
   <h4>Logging: violating a uniqueness constraint</h4>
   <p>
@@ -262,16 +262,16 @@
   <p>
     Every schema dump had to be manually edited, as it was adding a line that didn't apply to the schema, and could not be loaded with <code>supabase db reset</code> locally:
   </p>
-  <pre>
-    SELECT pg_catalog.setval('"public"."user_info_id_seq"', 5, true);
-  </pre>
+<pre>
+  SELECT pg_catalog.setval('"public"."user_info_id_seq"', 5, true);
+</pre>
   <p>
     I've renamed the <code>user_info</code> table to a more specific <code>user_handle</code>, but the seq name value retained the old name in the dump somehow.
   </p>
-  <pre>
-    Seeding data from supabase/seed.sql...
-      failed to send batch: ERROR: relation "public.user_info_id_seq" does not exist (SQLSTATE 42P01)
-  </pre>
+<pre>
+  Seeding data from supabase/seed.sql...
+    failed to send batch: ERROR: relation "public.user_info_id_seq" does not exist (SQLSTATE 42P01)
+</pre>
 
   <h4>Dependency uptime</h4>
   <p>
@@ -291,9 +291,9 @@
   </p>
 
   <h4>Fetching two joined records</h4>
-  <pre>
-    supabase.from('companies_admins').select('companies ( linkedin_external_id, name, link_uuid )')
-  </pre>
+<pre>
+  supabase.from('companies_admins').select('companies ( linkedin_external_id, name, link_uuid )')
+</pre>
 
   <p>
     With 8 records total in the <code>companies</code> table, and just as few in the <code>companies_admins</code>, this query returns two rows, and <mark>takes 550 ms</mark>.
@@ -301,14 +301,14 @@
   </p>
 
   <h4>COUNT</h4>
-  <pre>
-    supabase
-      .from('connections')
-      .select('count()')
-      .eq('company_id', ...)
-      .not('employee_id', 'is', null)
-      .single()
-  </pre>
+<pre>
+  supabase
+    .from('connections')
+    .select('count()')
+    .eq('company_id', ...)
+    .not('employee_id', 'is', null)
+    .single()
+</pre>
 
   <p>
     In a table with 45'000 records, two such queries (one with a <code>IS NULL</code> condition, and the other without) together take <mark>3 seconds</mark>.

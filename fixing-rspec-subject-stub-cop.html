@@ -22,22 +22,22 @@
 
   The details of the bug report were:
 
-  <pre class=ruby>
-    # detects offences
-    expect(subject).to receive(:my_method)
-    expect(subject).to receive(:my_method).and_call_original
-    expect(subject).to receive(:my_method).and_wrap_original { |m, *| m.call(42) }
+<pre class=ruby>
+# detects offences
+expect(subject).to receive(:my_method)
+expect(subject).to receive(:my_method).and_call_original
+expect(subject).to receive(:my_method).and_wrap_original { |m, *| m.call(42) }
 
-    # does not detect an offence
-    expect(subject).not_to receive(:my_method)
-  </pre>
+# does not detect an offence
+expect(subject).not_to receive(:my_method)
+</pre>
 
   I imagined the fix will be trivial, something like:
 
-  <pre class=diff>
-    - :to
-    + { :to :not_to :to_not }
-  </pre>
+<pre class=diff>
+  - :to
+  + { :to :not_to :to_not }
+</pre>
 
   However, I've immediately spotted a number of other flaws in the cop, and couldn't resist fixing them all. On my daily job, I would normally file a ticket flagged as <code>tech-debt</code>, and would address it at the end of the sprint in that spare time one can dedicate to any desired improvements. But with no deadlines, nor sprint constraints, no disturbing thoughts about scope creep, it's so natural to take a thing and make it as good as it can be.
 
@@ -59,42 +59,42 @@
 
   There was a special case in the cop to ignore the <a href="https://relishapp.com/rspec/rspec-expectations/docs/built-in-matchers/all-matcher"><code>all</code> matcher</a> being applied to the subject:
 
-  <pre class=ruby>
-    expect(subject).to all receive(:baz)
-  </pre>
+<pre class=ruby>
+  expect(subject).to all receive(:baz)
+</pre>
 
   It is still stubbing the subject. Why was this introduced? Turns out, to ignore the offence that the cop would raise in the following test code in <code>rubocop</code>:
 
-  <pre class=ruby>
-    expect(formatter_set).to all receive(:started).with(files)
-  </pre>
+<pre class=ruby>
+  expect(formatter_set).to all receive(:started).with(files)
+</pre>
 
   Originally, this test code <a href="https://github.com/rubocop-hq/rubocop/commit/c8729c8ecd6c312d5ca8bb6b660d5380038b1ed6#diff-be297a2e1f10d4ed00f8faaf78f0f06cL23">was introduced</a> to appease another cop, <code>RSpec/IteratedExpectation</code>. And that change has added a <code># rubocop:disable RSpec/SubjectStub</code> directive. And later a <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/497">quick fix</a> to <code>rubocop-rspec</code> was made to ignore <code>all</code> matcher when used with <code>expect(subject)</code>.
 
   This case in <code>rubocop</code> test code is quite interesting. There's a <code>formatter_set</code>, containing entries, formatters, and delegating specific method calls to them. As an additional puzzle, there's no way to add entries to the set, except by passing their attributes. That resulted in the following test code:
 
-  <pre class=ruby>
-    formatter_set.add_formatter('simple')
-    formatter_set.add_formatter('emacs')
+<pre class=ruby>
+  formatter_set.add_formatter('simple')
+  formatter_set.add_formatter('emacs')
 
-    allow(formatter_set).to all receive(:started)
+  allow(formatter_set).to all receive(:started)
 
-    formatter_set.started(files)
+  formatter_set.started(files)
 
-    expect(formatter_set).to all have_received(:started).with(files)
-  </pre>
+  expect(formatter_set).to all have_received(:started).with(files)
+</pre>
 
   It didn't seem right to me. If I would decide to remove the <code>all</code> special case, I would also have to <a href="https://github.com/rubocop-hq/rubocop/commit/a0aaa233c20e18784d841212e1caa724bcc919f7">fix the <code>rubocop</code> test code</a> so that on the next <code>rubocop-rspec</code> update there would be no offences.
 
   The change itself was trivial, but there was another problem with the new code, the default <code>have_received</code> enforced style of <code>RSpec/MessageSpies</code>. What does it mean? It means that:
 
-  <pre class=ruby>
-    # bad
-    expect(foo).to receive(:bar)
+<pre class=ruby>
+  # bad
+  expect(foo).to receive(:bar)
 
-    # good
-    expect(foo).to have_received(:bar)
-  </pre>
+  # good
+  expect(foo).to have_received(:bar)
+</pre>
 
   Both are valid syntaxes, and there's only one good reason to pick the latter for the former - Arrange-Act-Assert pattern, or <a href="https://thoughtbot.com/blog/four-phase-test">Four-Phase Test</a> (setup-excercise-verify-teardown) pattern. This pattern is unfortunately commonly overlooked.
 
@@ -114,9 +114,9 @@
 
   There's still a workaround if you can't find a way around stubbing your subject that is a delegating container (notice <code>.each</code>):
 
-  <pre class=ruby>
-    expect(subject.each).to all receive(:some_method)
-  </pre>
+<pre class=ruby>
+  expect(subject.each).to all receive(:some_method)
+</pre>
 
   All the changes described above went to a relatively small <a href="https://github.com/rubocop-hq/rubocop-rspec/pull/770">+130 -31 pull request</a> that has been recently merged.
 

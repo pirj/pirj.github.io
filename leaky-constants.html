@@ -13,38 +13,38 @@
   It took me by surprise when I realized that any constant declared in a block body is defined as a top-level constant.
   Yes, you've heard it correctly.
 
-  <pre class=ruby>
-    A = Class.new do
-      B = 1
-    end
-    A::B # NameError: uninitialized constant A::B
-    B # =&gt; 1
-  </pre>
+<pre class=ruby>
+  A = Class.new do
+    B = 1
+  end
+  A::B # NameError: uninitialized constant A::B
+  B # =&gt; 1
+</pre>
 
   Same applies to module and class declarations inside blocks, e.g.:
 
-  <pre class=ruby>
-    A = Class.new do
-      module B
-      end
-      class C
-      end
+<pre class=ruby>
+  A = Class.new do
+    module B
     end
-    A::B # NameError: uninitialized constant A::B
-    A::C # NameError: uninitialized constant A::C
-  </pre>
+    class C
+    end
+  end
+  A::B # NameError: uninitialized constant A::B
+  A::C # NameError: uninitialized constant A::C
+</pre>
 
   To be precise, it's not defined on a top-level, but rather in the same scope that the block is being run:
 
-  <pre class=ruby>
-    module M
-      A = Class.new do
-        B = 1
-      end
+<pre class=ruby>
+  module M
+    A = Class.new do
+      B = 1
     end
-    M::A::B # NameError: uninitialized constant M::A::B
-    M::B # =&gt; 1
-  </pre>
+  end
+  M::A::B # NameError: uninitialized constant M::A::B
+  M::B # =&gt; 1
+</pre>
 
   No big deal, you think, it's kind of rare. Not really if you use RSpec.
 
@@ -58,23 +58,23 @@
 
   One example can be:
 
-  <pre class=ruby>
-    # spec/a_spec.rb
-    RSpec.describe A do
-      class DummyClass &lt; described_class
-      end
-
-      it { ... }
+<pre class=ruby>
+  # spec/a_spec.rb
+  RSpec.describe A do
+    class DummyClass &lt; described_class
     end
 
-    # spec/b_spec.rb
-    RSpec.describe B do
-      class DummyClass
-      end
+    it { ... }
+  end
 
-      it { ... }
+  # spec/b_spec.rb
+  RSpec.describe B do
+    class DummyClass
     end
-  </pre>
+
+    it { ... }
+  end
+</pre>
 
   Those two specs would normally run and won't affect each other. However, if you run them in reverse order, "superclass mismatch" will raise.
 
