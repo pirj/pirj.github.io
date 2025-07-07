@@ -2,7 +2,7 @@ require 'date'
 require 'digest/sha1'
 
 GUID_FORMAT = '%s' * 8 + '-' + ('%s' * 4 + '-') * 3 + '%s' * 12
-Article = Struct.new(:date, :name, :title, :headline) do
+Article = Struct.new(:date, :name, :title) do
   def guid
     hash = Digest::SHA1.hexdigest(title)
     format(GUID_FORMAT, *hash.chars)
@@ -13,12 +13,15 @@ articles = Dir['*.html'] - ['index.html']
 
 articles.map! do |name|
   article = File.read(name).lines
-  head = article[article.index { |line| line =~ /@/ } + 2]
-  date = Date.parse head
-  title = head.match(/>.*</)[0][1...-1]
-  headline = article[article.index { |line| line =~ /@/ } + 6].strip
-  headline.gsub!(/<[^>]*>/, '')
-  Article.new(date, name, title, headline)
+  head = article[article.index { |line| line =~ /@═╦╣/ } + 2]
+  title = 
+    if head =~ /<meta/
+      head.match(/content=\"(.*)\"/)[1]
+    else
+      head.match(/>(.*)</)[1]
+    end
+  date = Date.parse title
+  Article.new(date, name, title)
 end
 
 articles.sort_by!(&:date).reverse!
@@ -40,7 +43,6 @@ File.write('feed.xml', <<~RSS)
         <item>
           <title>#{article.title}</title>
           <link>https://fili.pp.ru/#{article.name}</link>
-          <description>#{article.headline}</description>
           <pubDate>#{article.date.rfc2822}</pubDate>
           <guid isPermaLink="false">#{article.guid}</guid>
         </item>
