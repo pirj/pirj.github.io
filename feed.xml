@@ -5,10 +5,16 @@
   <description>Adventures and challenges, as written down by Phil Pirozhkov</description>
   <link>https://fili.pp.ru/</link>
   <language>en-us</language>
-  <pubDate>Thu, 17 Jul 2025 00:00:00 +0000</pubDate>
-  <lastBuildDate>Wed, 16 Jul 2025 00:00:00 +0000 </lastBuildDate>
+  <pubDate>Wed, 6 Aug 2025 00:00:00 +0000</pubDate>
+  <lastBuildDate>Tue, 5 Aug 2025 00:00:00 +0000 </lastBuildDate>
   <atom:link href="https://fili.pp.ru/feed.xml" rel="self" type="application/rss+xml"/>
   <item>
+  <title>06-Aug-2025 Install Alpine Linux on an OVH VPS</title>
+  <link>https://fili.pp.ru/installing-alpine-linux-on-an-ovh-vps.html</link>
+  <pubDate>Wed, 6 Aug 2025 00:00:00 +0000</pubDate>
+  <guid isPermaLink="false">7c690987-0472-b5a2-83ca-b7457d023b51</guid>
+</item>
+<item>
   <title>17-Jul-2025 Pitfalls of CDN file uploads</title>
   <link>https://fili.pp.ru/pitfalls-of-cdn-file-uploads.html</link>
   <pubDate>Thu, 17 Jul 2025 00:00:00 +0000</pubDate>
