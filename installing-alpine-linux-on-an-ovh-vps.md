@@ -58,15 +58,15 @@ Verify that the image signature matches:
 Boot the Alpine ISO image in a pseudo-virtualised environment:
 
     $ qemu-system-x86_64 \
-      -cpu host \
-      -enable-kvm \
-      -m 1G \
-      -net nic \
-      -net user \
-      -drive file=/dev/sdb,format=raw,index=0,media=disk \
-      -cdrom alpine-virt-3.22.1-x86_64.iso \
-      -nographic \
-      -boot d
+        -cpu host \
+        -enable-kvm \
+        -m 1G \
+        -net nic \
+        -net user \
+        -drive file=/dev/sdb,format=raw,index=0,media=disk \
+        -cdrom alpine-virt-3.22.1-x86_64.iso \
+        -nographic \
+        -boot d
 
 Magic, it booted:
 
