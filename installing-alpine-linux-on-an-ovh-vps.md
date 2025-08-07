@@ -11,13 +11,13 @@ This is an comprehensive step-by-step guide on how to install Alpine Linux on an
 
 #### Disclaimer
 
-The same can be [done with chroot](https://nicolas.porcel.me/posts/2017-05-11-how-to-install-alpine-on-ovh.html), but I wanted to replace the image manipulation and mounting into just one step.
+[`chroot` can do the same](https://nicolas.porcel.me/posts/2017-05-11-how-to-install-alpine-on-ovh.html). But QEMU does a great job at replace multiple image manipulation and mounting commands into a single step.
 
 ### Steps
 
-Boot your VPS in rescue mode from OVH UI. You'll receive a link by email that will reveal your root SSH password.
+Boot your VPS in rescue mode from OVH UI. You'll receive a link by email that reveals your root SSH password.
 
-SSH into your VPS:
+SSH into your VPS's rescue mode shell:
 
     $ ssh root@vps-lazy1337.vps.ovh.net
 
@@ -31,7 +31,7 @@ Install [QEMU](https://www.qemu.org/):
     After this operation, 115 MB of additional disk space will be used.
 
 Download [Alpine](https://alpinelinux.org/downloads/).
-I chose the "Virtual" flavour as quite sufficient for the task.
+Pick the "Virtual" flavour.
 Also download the image's checksum and GPG signature.
 
     $ wget https://dl-cdn.alpinelinux.org/alpine/v3.22/releases/x86_64/alpine-virt-3.22.1-x86_64.iso
@@ -100,7 +100,7 @@ Aaaand:
     /boot is device /dev/sda1
     Installation is complete. Please reboot.
 
-Time to reboot, but twice, because you're in in onion of machines. First, exit from the Alpine installation running in QEMU:
+Time to reboot, but twice, because you're in an onion of machines. First, exit from the Alpine installation running in QEMU:
 
     localhost:~# poweroff
     [RESCUE] root@vps-lazy1337:~ $
