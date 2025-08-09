@@ -1,4 +1,4 @@
-import { createTimeline, animate, stagger } from 'https://cdn.jsdelivr.net/npm/animejs@4.0.2/+esm';
+import { createTimeline, animate, stagger } from 'https://cdn.jsdelivr.net/npm/animejs@4.1.2/+esm';
 
 addEventListener('zero-md-rendered', function() {
   const shadow = document.getElementsByTagName('zero-md')[0].shadowRoot
