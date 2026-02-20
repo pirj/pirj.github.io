@@ -2,19 +2,8 @@
 <meta charset=utf-8>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel=icon href=/favicon-filipp.ico type=image/x-icon/>
+<link rel=stylesheet href=article.css type=text/css>
 <style>
-  @media (min-width:320px) { body { padding: 1em; } }
-  @media (min-width:481px) { body { padding: 1em 4em; } }
-
-  article {
-    font-family: monospace;
-    font-size: 1.2em;
-  }
-  textarea {
-    border: 0;
-    width: 100%;
-    height: 10em;
-  }
   i.cursor {
     font-style: normal;
     animation: 1s blink ease infinite;
@@ -23,12 +12,7 @@
     from, to { color: transparent; }
     20% { color: black; }
   }
-  footer {
-    display: none;
-  }
-  .feed {
-    opacity: 60%;
-  }
+  .feed { opacity: 60%; }
   ul.adventures li { margin-bottom: 1em; }
   ul.adventures li:last { margin-bottom: 0; }
   ul.adventures li p { margin: 0 0 0 1em; color: gray; }
@@ -38,7 +22,6 @@
     margin-left: 0.5em;
   }
   ul { list-style: none; }
-  mark { background-color: hsla(50, 100%, 80%, 0.6); }
 </style>
 
 <article>
@@ -48,6 +31,10 @@
     ~ $ whoami<br/>
     <strong>Phil Pirozhkov, software engineer, seasoned Ruby developer</strong><br/>
     <a href=https://github.com/rspec>RSpec</a> core team member, <a href=https://github.com/rubocop-hq/rubocop-rspec>RuboCop RSpec</a> core team member, <a href=https://github.com/rubocop-hq/rspec-style-guide>RSpec style guide</a> maintainer.
+  </p>
+
+  <p>
+    ~ $ mail -s 'Hi Phil' <a href=mailto:hello@fili.pp.ru>phil-pirozhkov</a><br/>
   </p>
 
   <p>
@@ -126,7 +113,6 @@
   </p>
 
   <p>
-    ~ $ mail -s 'Hi Phil' <a href=mailto:hello@fili.pp.ru>phil-pirozhkov</a><br/>
     ~ $ <i class=cursor>_</i>
   </p>
 </article>
