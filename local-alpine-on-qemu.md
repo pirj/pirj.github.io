@@ -37,7 +37,7 @@ So I went looking for alternatives.
     $ sshpass -p root ssh-copy-id root@localhost
     $ scp -p sshd_config.d/*.conf root@localhost:/etc/ssh/sshd_config.d
 
-But it felt buggy and incomplete ([1](https://github.com/beringresearch/macpine/issues/213), [2](https://github.com/beringresearch/macpine/issues/214), [3](https://github.com/beringresearch/macpine/issues/215), [4](https://github.com/beringresearch/macpine/issues/216), [5](https://github.com/beringresearch/macpine/issues/217), [6](https://github.com/beringresearch/macpine/issues/218)).
+But it is buggy and incomplete ([1](https://github.com/beringresearch/macpine/issues/213), [2](https://github.com/beringresearch/macpine/issues/214), [3](https://github.com/beringresearch/macpine/issues/215), [4](https://github.com/beringresearch/macpine/issues/216), [5](https://github.com/beringresearch/macpine/issues/217), [6](https://github.com/beringresearch/macpine/issues/218)).
 
 ### libvirt & virt-install
 
