@@ -1,6 +1,6 @@
 ### @═╦╣╚╗ [A mazing engineer](../)
 
-#### 20-Feb-2026 Pitfalls of CDN file uploads
+#### 20-Feb-2026 Alpine Linux on QEMU: the tool
 
 For a pet project, I was on a lookout for a lightweight tool similar to [PRoot](https://wiki.termux.com/wiki/PRoot), a user-space "jail", "sandbox", or "container" to be able to run the SSH server without exposing it on my laptop.
 
